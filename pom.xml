@@ -51,6 +51,14 @@
 		<module>positioning-persist</module>
 		<module>positioning-persist-mysql</module>
 	</modules>
+	
+	<repositories>
+		<repository>
+			<id>safranek</id>
+			<name>ILONA - Snapshot</name>
+			<url>http://safranek.iit.uni-miskolc.hu:8081/nexus/content/repositories/ILONA-Snapshots/</url>
+		</repository>
+	</repositories>
 
 	<distributionManagement>
 		<snapshotRepository>
