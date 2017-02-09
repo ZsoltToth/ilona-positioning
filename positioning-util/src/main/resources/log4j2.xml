@@ -28,13 +28,38 @@
 		<File name="PositioningLogFile" fileName="logs/ilonaPositioning.log"
 			append="true">
 			<PatternLayout
-				pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n" />
+				pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss;SSS} | [%t] %C{2} (%F:%L) - %m%n" />
 		</File>
 		
-			<File name="PositioningResultLogFile" fileName="logs/ilonaPositioningResult.log"
-			append="false">
+			<File name="NeuralNetworkPositioningResultLogFile" fileName="logs/ilonaPositioningResultNeuralNetwork.log"
+			append="true" >
+			
 			<PatternLayout
-				pattern="%-5p|%C{2} (%F:%L) - %m%n" />
+				pattern="%d{yyyy-MM-dd HH:mm:ss;SSS},%m%n" />
+		</File>
+	
+			<File name="KNNPositioningResultLogFile" fileName="logs/ilonaPositioningResultKNN.log"
+			append="true" >
+			
+			<PatternLayout
+				pattern="%d{yyyy-MM-dd HH:mm:ss;SSS},%m%n" />
+		</File>
+		<File name="NaiveBayesPositioningResultLogFile" fileName="logs/ilonaPositioningResultNaiveBayes.log"
+			append="true" >
+			
+			<PatternLayout
+				pattern="%d{yyyy-MM-dd HH:mm:ss;SSS},%m%n" />
+		</File>
+		
+		
+		
+	
+		
+			<File name="NeuralNetworkOverSensorsPositioningResultLogFile" fileName="logs/ilonaPositioningResultNeuralNetworkOverSensors.log"
+			append="true" >
+			
+			<PatternLayout
+				pattern="%d{yyyy-MM-dd HH:mm:ss;SSS},%m%n" />
 		</File>
 		
 
@@ -71,17 +96,37 @@
 			<AppenderRef ref="STDOUT" />
 			<AppenderRef ref="ALL_LOGS_FILE" />
 			<AppenderRef ref="PositioningLogFile" />
+			<AppenderRef ref="NaiveBayesPositioningResultLogFile" level="warn"/>
 		</Logger>
+
 
 
 		<Logger
-			name="uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork"
+			name="uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork.NeuralNetworkPositioning"
 			level="info">
-			<AppenderRef ref="STDOUT" />
 			<AppenderRef ref="ALL_LOGS_FILE" />
 			<AppenderRef ref="PositioningLogFile" />
-			<AppenderRef ref="PositioningResultLogFile" />
+			<AppenderRef ref="NeuralNetworkPositioningResultLogFile" level="warn"/>
 		</Logger>
+		<Logger
+			name="uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork.NeuralNetworkPositioningOverSensors"
+			level="info">
+			<AppenderRef ref="ALL_LOGS_FILE" />
+			<AppenderRef ref="PositioningLogFile" />
+			<AppenderRef ref="NeuralNetworkOverSensorsPositioningResultLogFile" level="warn"/>
+		</Logger>
+		
+				<Logger
+			name="uni.miskolc.ips.ilona.positioning.service.impl.knn.KNNPositioning"
+			level="info">
+			<AppenderRef ref="ALL_LOGS_FILE" />
+			<AppenderRef ref="PositioningLogFile" />
+			<AppenderRef ref="KNNPositioningResultLogFile" level="warn"/>
+		</Logger>
+		
+			
+
+
 
 		<Root level="info">
 			<AppenderRef ref="ALL_LOGS_FILE" level="error" />

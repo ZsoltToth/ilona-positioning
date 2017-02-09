@@ -177,12 +177,11 @@ public class NeuralNetworkPositioningOverSensors implements PositioningService {
 		}
 		int maxIndex = getIndexOfMaxValue(votesArray);
 		Zone result = zones.get(maxIndex);
-		if (measurement.getPosition() != null) {
-			if (measurement.getPosition().getZone() != null) {
+		if (measurement.getPosition() != null && measurement.getPosition().getZone() != null) {
 
-				LOG.warn(measurement.getPosition().getZone() + "," + result);
+				LOG.warn(measurement.getId()+","+measurement.getPosition().getZone().getName()+","+measurement.getPosition().getZone().getId() + "," + result.getName()+","+result.getId());
 			}
-		}
+		
 		return new Position(result);
 	}
 

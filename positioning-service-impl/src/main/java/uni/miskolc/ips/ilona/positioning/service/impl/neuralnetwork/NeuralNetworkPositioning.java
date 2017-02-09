@@ -74,8 +74,8 @@ public class NeuralNetworkPositioning implements PositioningService {
 		}
 		LOG.info(String.format("The incoming measurement is " + measurement.toString()
 				+ ". The determined position for this is " + result.toString()));
-		if(measurement.getPosition().getZone()!=null)
-			LOG.warn(measurement.getPosition().getZone()+","+result.getZone());
+		if(measurement.getPosition() != null && measurement.getPosition().getZone()!=null){
+			LOG.warn(measurement.getId()+","+measurement.getPosition().getZone().getName()+","+measurement.getPosition().getZone().getId() + "," + result.getZone().getName()+","+result.getZone().getId());}
 		return result;
 	}
 
