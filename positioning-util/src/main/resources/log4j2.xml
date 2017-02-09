@@ -1,138 +1,97 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Configuration xmlns="http://logging.apache.org/log4j/2.0/config">
-
-	<Appenders>
-		<File name="ALL_LOGS_FILE" fileName="logs/ilona.log" append="true">
-			<PatternLayout
-				pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n" />
-		</File>
-
-		<File name="DAOLogFile" fileName="logs/ilonaPersistMysql.log"
-			append="true">
-			<PatternLayout
-				pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n" />
-		</File>
-
-		<File name="ControllerLogFile" fileName="logs/ilonaController.log"
-			append="true">
-			<PatternLayout
-				pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n" />
-		</File>
-
-		<File name="MODEL_LOG_FILE" fileName="logs/ilonaModel.log"
-			append="true">
-			<PatternLayout
-				pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n" />
-		</File>
-
-		<File name="PositioningLogFile" fileName="logs/ilonaPositioning.log"
-			append="true">
-			<PatternLayout
-				pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss;SSS} | [%t] %C{2} (%F:%L) - %m%n" />
-		</File>
-		
-			<File name="NeuralNetworkPositioningResultLogFile" fileName="logs/ilonaPositioningResultNeuralNetwork.log"
-			append="true" >
-			
-			<PatternLayout
-				pattern="%d{yyyy-MM-dd HH:mm:ss;SSS},%m%n" />
-		</File>
-	
-			<File name="KNNPositioningResultLogFile" fileName="logs/ilonaPositioningResultKNN.log"
-			append="true" >
-			
-			<PatternLayout
-				pattern="%d{yyyy-MM-dd HH:mm:ss;SSS},%m%n" />
-		</File>
-		<File name="NaiveBayesPositioningResultLogFile" fileName="logs/ilonaPositioningResultNaiveBayes.log"
-			append="true" >
-			
-			<PatternLayout
-				pattern="%d{yyyy-MM-dd HH:mm:ss;SSS},%m%n" />
-		</File>
-		
-		
-		
-	
-		
-			<File name="NeuralNetworkOverSensorsPositioningResultLogFile" fileName="logs/ilonaPositioningResultNeuralNetworkOverSensors.log"
-			append="true" >
-			
-			<PatternLayout
-				pattern="%d{yyyy-MM-dd HH:mm:ss;SSS},%m%n" />
-		</File>
-		
-
-		<Console name="STDOUT" target="SYSTEM_OUT">
-			<PatternLayout
-				pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n" />
-		</Console>
-	</Appenders>
-
-	<Loggers>
-
-		<Logger name="uni.miskolc.ips.ilona.persist" level="info">
-			<AppenderRef ref="STDOUT" />
-			<AppenderRef ref="ALL_LOGS_FILE" />
-			<AppenderRef ref="DAOLogFile" />
-		</Logger>
-
-		<Logger name="uni.miskolc.ips.ilona.controller" level="info">
-			<AppenderRef ref="STDOUT" />
-			<AppenderRef ref="ALL_LOGS_FILE" />
-			<AppenderRef ref="ControllerLogFile" />
-		</Logger>
-
-		<Logger name="uni.miskolc.ips.ilona.core.model.measurement"
-			level="info">
-			<AppenderRef ref="STDOUT" />
-			<AppenderRef ref="ALL_LOGS_FILE" />
-			<AppenderRef ref="MODEL_LOG_FILE" />
-		</Logger>
-
-		<Logger
-			name="uni.miskolc.ips.ilona.service.impl.positioning.classification.bayes"
-			level="info">
-			<AppenderRef ref="STDOUT" />
-			<AppenderRef ref="ALL_LOGS_FILE" />
-			<AppenderRef ref="PositioningLogFile" />
-			<AppenderRef ref="NaiveBayesPositioningResultLogFile" level="warn"/>
-		</Logger>
-
-
-
-		<Logger
-			name="uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork.NeuralNetworkPositioning"
-			level="info">
-			<AppenderRef ref="ALL_LOGS_FILE" />
-			<AppenderRef ref="PositioningLogFile" />
-			<AppenderRef ref="NeuralNetworkPositioningResultLogFile" level="warn"/>
-		</Logger>
-		<Logger
-			name="uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork.NeuralNetworkPositioningOverSensors"
-			level="info">
-			<AppenderRef ref="ALL_LOGS_FILE" />
-			<AppenderRef ref="PositioningLogFile" />
-			<AppenderRef ref="NeuralNetworkOverSensorsPositioningResultLogFile" level="warn"/>
-		</Logger>
-		
-				<Logger
-			name="uni.miskolc.ips.ilona.positioning.service.impl.knn.KNNPositioning"
-			level="info">
-			<AppenderRef ref="ALL_LOGS_FILE" />
-			<AppenderRef ref="PositioningLogFile" />
-			<AppenderRef ref="KNNPositioningResultLogFile" level="warn"/>
-		</Logger>
-		
-			
-
-
-
-		<Root level="info">
-			<AppenderRef ref="ALL_LOGS_FILE" level="error" />
-			<AppenderRef ref="STDOUT" level="warn" />
-		</Root>
-
-	</Loggers>
-
+   <Appenders>
+      <File name="ALL_LOGS_FILE" fileName="logs/ilona.log" append="true">
+         <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n" />
+      </File>
+      <File name="DAOLogFile" fileName="logs/ilonaPersistMysql.log" append="true">
+         <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n" />
+      </File>
+      <File name="ControllerLogFile" fileName="logs/ilonaController.log" append="true">
+         <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n" />
+      </File>
+      <File name="MODEL_LOG_FILE" fileName="logs/ilonaModel.log" append="true">
+         <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n" />
+      </File>
+      
+      
+      <!-- Positioning Log Files -->
+      
+      
+      <File name="PositioningLogFile" fileName="logs/ilonaPositioning.log" append="true">
+         <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss;SSS} | [%t] %C{2} (%F:%L) - %m%n" />
+      </File>
+      <File name="NeuralNetworkPositioningResultLogFile" fileName="logs/ilonaPositioningResultNeuralNetwork.log" append="true">
+         <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss;SSS},%m%n" />
+      </File>
+      <File name="KNNPositioningResultLogFile" fileName="logs/ilonaPositioningResultKNN.log" append="true">
+         <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss;SSS},%m%n" />
+      </File>
+      <File name="NaiveBayesPositioningResultLogFile" fileName="logs/ilonaPositioningResultNaiveBayes.log" append="true">
+         <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss;SSS},%m%n" />
+      </File>
+      <File name="NeuralNetworkOverSensorsPositioningResultLogFile" fileName="logs/ilonaPositioningResultNeuralNetworkOverSensors.log" append="true">
+         <PatternLayout pattern="%d{yyyy-MM-dd HH:mm:ss;SSS},%m%n" />
+      </File>
+      
+      
+      <!-- END OF Positioning Log Files -->
+      
+      
+      <Console name="STDOUT" target="SYSTEM_OUT">
+         <PatternLayout pattern="%-5p | %d{yyyy-MM-dd HH:mm:ss} | [%t] %C{2} (%F:%L) - %m%n" />
+      </Console>
+   </Appenders>
+   <Loggers>
+      <Logger name="uni.miskolc.ips.ilona.persist" level="info">
+         <AppenderRef ref="STDOUT" />
+         <AppenderRef ref="ALL_LOGS_FILE" />
+         <AppenderRef ref="DAOLogFile" />
+      </Logger>
+      <Logger name="uni.miskolc.ips.ilona.controller" level="info">
+         <AppenderRef ref="STDOUT" />
+         <AppenderRef ref="ALL_LOGS_FILE" />
+         <AppenderRef ref="ControllerLogFile" />
+      </Logger>
+      <Logger name="uni.miskolc.ips.ilona.core.model.measurement" level="info">
+         <AppenderRef ref="STDOUT" />
+         <AppenderRef ref="ALL_LOGS_FILE" />
+         <AppenderRef ref="MODEL_LOG_FILE" />
+      </Logger>
+      
+      
+      <!-- Positioning Loggers -->
+      
+      
+      <Logger name="uni.miskolc.ips.ilona.service.impl.positioning.classification.bayes" level="info">
+         <AppenderRef ref="STDOUT" />
+         <AppenderRef ref="ALL_LOGS_FILE" />
+         <AppenderRef ref="PositioningLogFile" />
+         <AppenderRef ref="NaiveBayesPositioningResultLogFile" level="warn" />
+      </Logger>
+      <Logger name="uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork.NeuralNetworkPositioning" level="info">
+         <AppenderRef ref="ALL_LOGS_FILE" />
+         <AppenderRef ref="PositioningLogFile" />
+         <AppenderRef ref="NeuralNetworkPositioningResultLogFile" level="warn" />
+      </Logger>
+      <Logger name="uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork.NeuralNetworkPositioningOverSensors" level="info">
+         <AppenderRef ref="ALL_LOGS_FILE" />
+         <AppenderRef ref="PositioningLogFile" />
+         <AppenderRef ref="NeuralNetworkOverSensorsPositioningResultLogFile" level="warn" />
+      </Logger>
+      <Logger name="uni.miskolc.ips.ilona.positioning.service.impl.knn.KNNPositioning" level="info">
+         <AppenderRef ref="ALL_LOGS_FILE" />
+         <AppenderRef ref="PositioningLogFile" />
+         <AppenderRef ref="KNNPositioningResultLogFile" level="warn" />
+      </Logger>
+      
+      
+      <!-- END OF Positioning Loggers -->
+      
+      
+      <Root level="info">
+         <AppenderRef ref="ALL_LOGS_FILE" level="error" />
+         <AppenderRef ref="STDOUT" level="warn" />
+      </Root>
+   </Loggers>
 </Configuration>
