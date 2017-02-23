@@ -32,33 +32,36 @@ public class NaiveBayesPositioningService implements PositioningService {
 	private static final Logger LOG = LogManager
 			.getLogger(NaiveBayesPositioningService.class);
 	private MeasurementService measurementservice;
-	private PositionService positionservice;
 	private MeasurementDistanceCalculator measDistanceCalculator;
 	private double maxMeasurementDistance;
 
 	public NaiveBayesPositioningService(MeasurementService measurementservice,
-			PositionService positionservice,
 			MeasurementDistanceCalculator measDistanceCalculator,
 			double maxMeasurementDistance) {
 		super();
 		this.measurementservice = measurementservice;
 		this.measDistanceCalculator = measDistanceCalculator;
 		this.maxMeasurementDistance = maxMeasurementDistance;
-		this.positionservice = positionservice;
 	}
 
 	public Position determinePosition(Measurement measurement) {
 		Collection<Position> positionswithzone = null;
 		Collection<Measurement> measurements;
 		try {
-			positionswithzone = this
-					.positionsWithZone(positionservice.readPositions());
+			//positionswithzone = this
+				//	.positionsWithZone(positionservice.readPositions());
 			measurements = measurementservice
 					.readMeasurements();
 		} catch (DatabaseUnavailableException e) {
 			LOG.warn(e.getMessage());
 			return new Position(Zone.UNKNOWN_POSITION);
 		}
+		Collection<Position> positions = new ArrayList<>();
+		for(Measurement m : measurements){
+			positions.add(m.getPosition());
+		}
+		positionswithzone = this.positionsWithZone(positions);
+		
 		if (positionswithzone.isEmpty()) {
 			LOG.warn("No position with zone");
 			return new Position(Zone.UNKNOWN_POSITION);
