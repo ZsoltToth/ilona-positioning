@@ -56,9 +56,11 @@ public class NaiveBayesPositioningService implements PositioningService {
 			measurements = measurementservice
 					.readMeasurements();
 		} catch (DatabaseUnavailableException e) {
+			LOG.warn(e.getMessage());
 			return new Position(Zone.UNKNOWN_POSITION);
 		}
 		if (positionswithzone.isEmpty()) {
+			LOG.warn("No position with zone");
 			return new Position(Zone.UNKNOWN_POSITION);
 		}
 		Position bestFit = new Position(Zone.UNKNOWN_POSITION);
