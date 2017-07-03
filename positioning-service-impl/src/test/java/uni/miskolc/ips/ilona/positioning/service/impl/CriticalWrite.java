@@ -10,8 +10,9 @@ import java.nio.file.StandardOpenOption;
 import java.util.ArrayList;
 import java.util.List;
 
+import uni.miskolc.ips.ilona.positioning.model.neuralnetwork.NeuralNetwork;
 import uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork.EvaluatingThread;
-import uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork.NeuralNetwork;
+import uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork.NeuralNetworkPositioning;
 
 /**
  * Unit test for simple App.

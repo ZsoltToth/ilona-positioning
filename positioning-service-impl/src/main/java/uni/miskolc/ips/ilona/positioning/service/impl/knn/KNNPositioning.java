@@ -1,19 +1,20 @@
 package uni.miskolc.ips.ilona.positioning.service.impl.knn;
 
+import java.util.ArrayList;
+import java.util.Collections;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
 import uni.miskolc.ips.ilona.measurement.model.measurement.MeasurementDistanceCalculator;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
-import uni.miskolc.ips.ilona.positioning.service.PositioningService;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.measurement.service.MeasurementService;
 import uni.miskolc.ips.ilona.measurement.service.exception.DatabaseUnavailableException;
-
-import java.util.ArrayList;
-
-import java.util.Collections;
-
-import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
+import uni.miskolc.ips.ilona.positioning.model.knn.Neighbour;
+import uni.miskolc.ips.ilona.positioning.model.knn.NeighbourComparator;
+import uni.miskolc.ips.ilona.positioning.service.PositioningService;
 
 /**
  * 
@@ -104,7 +105,7 @@ public abstract class KNNPositioning implements PositioningService {
 
 		ArrayList<Neighbour> neighbours = getNeighbourList(measurements, measurement);
 		final ArrayList<Neighbour> kNearestNeighbours = getKNearestNeighbour(neighbours);
-		Position result = getMajorVote(kNearestNeighbours);
+		Position result = doGetMajorVote(kNearestNeighbours);
 		LOG.info(String.format("The position of measurement "+ measurement.toString()+" is position "+result.getZone()));
 		LOG.warn(this.getClass().getSimpleName()+","+measurement.getId()+","+measurement.getPosition().getZone().getName()+","+measurement.getPosition().getZone().getId()+","+result.getZone().getName()+","+result.getZone().getId());
 		return result;
@@ -146,12 +147,13 @@ public abstract class KNNPositioning implements PositioningService {
 
 	/**
 	 * Calculates the vote of the neighbours.
+	 * The naming convention indicates that this method must be overridden in concrete classes.
 	 * 
 	 * @param nearestneighbours
 	 *            The list of the k Nearest neighbour
 	 * @return the votes of the neighbours
 	 */
-	protected abstract Position getMajorVote(ArrayList<Neighbour> nearestneighbours);
+	protected abstract Position doGetMajorVote(ArrayList<Neighbour> nearestneighbours);
 
 	/**
 	 * 

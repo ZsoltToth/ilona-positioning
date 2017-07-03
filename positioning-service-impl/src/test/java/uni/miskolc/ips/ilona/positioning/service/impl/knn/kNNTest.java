@@ -28,7 +28,6 @@ import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.measurement.service.MeasurementService;
 import uni.miskolc.ips.ilona.measurement.service.exception.DatabaseUnavailableException;
-import uni.miskolc.ips.ilona.positioning.service.impl.knn.Neighbour;
 
 public class kNNTest {
 	private ArrayList<Measurement> measurementsList;

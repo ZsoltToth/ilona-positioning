@@ -1,4 +1,4 @@
-package uni.miskolc.ips.ilona.positioning.service.impl.knn;
+package uni.miskolc.ips.ilona.positioning.model.knn;
 
 import java.util.Comparator;
 /**

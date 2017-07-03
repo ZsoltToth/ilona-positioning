@@ -4,7 +4,7 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.MeasurementDistanceCa
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.measurement.service.MeasurementService;
-import uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork.NeuralNetworkPositioning;
+import uni.miskolc.ips.ilona.positioning.model.knn.Neighbour;
 
 import java.util.ArrayList;
 
@@ -18,7 +18,6 @@ import org.apache.logging.log4j.Logger;
  */
 public class KNNSimplePositioning extends KNNPositioning {
 
-	private static final Logger LOG = LogManager.getLogger(KNNSimplePositioning.class);
 	/**
 	 * The constructor of the KNNSimplePositioning class.
 	 * 
@@ -36,7 +35,7 @@ public class KNNSimplePositioning extends KNNPositioning {
 	}
 
 	@Override
-	protected final Position getMajorVote(final ArrayList<Neighbour> nearestneighbours) {
+	protected final Position doGetMajorVote(final ArrayList<Neighbour> nearestneighbours) {
 		ArrayList<Zone> zones = new ArrayList<Zone>();
 		int maxsize = nearestneighbours.size();
 		double[] votes = new double[maxsize];
@@ -54,5 +53,6 @@ public class KNNSimplePositioning extends KNNPositioning {
 		result = new Position(zones.get(maxindex));
 		return result;
 	}
+
 
 }

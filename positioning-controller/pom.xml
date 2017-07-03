@@ -8,9 +8,7 @@
 		<artifactId>positioning</artifactId>
 		<version>0.1.2-SNAPSHOT</version>
 	</parent>
-	<groupId>uni.miskolc.ips.ilona</groupId>
 	<artifactId>positioning-controller</artifactId>
-	<version>0.1.2-SNAPSHOT</version>
 	<name>positioning-controller</name>
 	<url>http://maven.apache.org</url>
 	<properties>

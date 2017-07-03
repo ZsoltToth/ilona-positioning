@@ -1,6 +1,7 @@
 package uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork;
 import java.io.File;
 
+import uni.miskolc.ips.ilona.positioning.model.neuralnetwork.NeuralNetwork;
 import uni.miskolc.ips.ilona.positioning.service.impl.CriticalWrite;
 
 public class EvaluatingThread extends Thread {

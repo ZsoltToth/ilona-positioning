@@ -1,4 +1,4 @@
-package uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork;
+package uni.miskolc.ips.ilona.positioning.model.neuralnetwork;
 
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -13,6 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -23,6 +24,7 @@ import weka.core.Attribute;
 import weka.core.DenseInstance;
 import weka.core.Instance;
 import weka.core.Instances;
+import weka.core.converters.ConverterUtils.DataSource;
 
 /**
  * The class for the MultilayerPerceptron and its inicializing values. It contains methods for evaluate the MultilayerPerceptron.
@@ -104,7 +106,9 @@ public class NeuralNetwork implements Serializable {
 	
 
 	public double getEvaluation(final String filepath) throws Exception {
-		Instances instances = readInstances(filepath);
+		DataSource source = new DataSource(filepath);
+		Instances instances = source.getDataSet();
+		instances.setClassIndex(instances.numAttributes()-1);
 		Evaluation eval = new Evaluation(instances);
 		eval.evaluateModel(mlp, instances);
 		double errorRate = eval.errorRate();
@@ -113,7 +117,8 @@ public class NeuralNetwork implements Serializable {
 	}
 
 	private MultilayerPerceptron buildMultilayerPerceptron(final String trainingfilepath) throws Exception {
-		Instances trainingInstances = readInstances(trainingfilepath);
+		DataSource source = new DataSource(trainingfilepath);
+		Instances trainingInstances = source.getDataSet();
 		trainingInstances.setClassIndex(trainingInstances.numAttributes() - 1);
 		MultilayerPerceptron mlp = new MultilayerPerceptron();
 		mlp.setLearningRate(learningRate);
@@ -215,12 +220,13 @@ public class NeuralNetwork implements Serializable {
 			attributes.add(new Attribute(header.get(i).name()));
 		}
 		LOG.info("The attributes are " + attributes.toString());
+		LOG.info("The incoming measurement is  " + meas.toString());
 		for (int i = 0; i < attributes.size(); i++) {
-			if (attributes.get(i).name().equals("measx") && meas.getMagnetometer() != null) {
+			if ((attributes.get(i).name().equals("measx")|| attributes.get(i).name().equalsIgnoreCase("magnetometerX")) && meas.getMagnetometer() != null) {
 				instance.setValue(i, meas.getMagnetometer().getxAxis());
-			} else if (attributes.get(i).name().equals("measy") && meas.getMagnetometer() != null) {
+			} else if ((attributes.get(i).name().equals("measy")|| attributes.get(i).name().equalsIgnoreCase("magnetometery"))  && meas.getMagnetometer() != null) {
 				instance.setValue(i, meas.getMagnetometer().getyAxis());
-			} else if (attributes.get(i).name().equals("measz") && meas.getMagnetometer() != null) {
+			} else if ((attributes.get(i).name().equals("measz") || attributes.get(i).name().equalsIgnoreCase("magnetometerz")) && meas.getMagnetometer() != null) {
 				instance.setValue(i, meas.getMagnetometer().getzAxis());
 			} else if (attributes.get(i).name().contains(":")) {
 				instance.setValue(i, measurementSeeBluetooth(meas, attributes.get(i).name()));
@@ -232,6 +238,7 @@ public class NeuralNetwork implements Serializable {
 
 		}
 		LOG.info("The created instance is " + instance);
+		System.out.println("The instance is "+instance);
 		return instance;
 	}
 
@@ -271,6 +278,9 @@ public class NeuralNetwork implements Serializable {
 		if (meas.getWifiRSSI() != null) {
 			if (meas.getWifiRSSI().getRssiValues().containsKey(wifi)) {
 				return meas.getWifiRSSI().getRSSI(wifi);
+			}
+			if(meas.getWifiRSSI().getRssiValues().containsKey(wifi.trim())){
+				return meas.getWifiRSSI().getRSSI(wifi.trim());
 			}
 		}
 		return notSeenWifi;
