@@ -1,12 +1,5 @@
 package uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork;
 
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
@@ -16,13 +9,11 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.measurement.service.ZoneService;
+import uni.miskolc.ips.ilona.positioning.model.MeasurementToInstanceConverter;
 import uni.miskolc.ips.ilona.positioning.model.neuralnetwork.NeuralNetwork;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
 import weka.classifiers.functions.MultilayerPerceptron;
-import weka.core.Attribute;
-import weka.core.DenseInstance;
 import weka.core.Instance;
-import weka.core.Instances;
 
 
 /**
@@ -64,7 +55,7 @@ public class NeuralNetworkPositioning implements PositioningService {
 	public final Position determinePosition(final Measurement measurement) {
 		Position result;
 		MultilayerPerceptron mlp = neuralNetwork.getMultilayerPerceptron();
-		Instance instance = neuralNetwork.convertMeasurementToInstance(measurement);
+		Instance instance = MeasurementToInstanceConverter.convertMeasurementToInstance(measurement, neuralNetwork.getHeader());
 		double cls;
 		try {
 			cls = mlp.classifyInstance(instance);

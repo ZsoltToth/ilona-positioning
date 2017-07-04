@@ -2,11 +2,8 @@ package uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
 import java.util.UUID;
 
 import org.easymock.EasyMock;
@@ -19,19 +16,14 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import uni.miskolc.ips.ilona.measurement.model.measurement.BluetoothTags;
-import uni.miskolc.ips.ilona.measurement.model.measurement.Magnetometer;
 import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
-import uni.miskolc.ips.ilona.measurement.model.measurement.MeasurementBuilder;
-import uni.miskolc.ips.ilona.measurement.model.measurement.RFIDTags;
-import uni.miskolc.ips.ilona.measurement.model.measurement.WiFiRSSI;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.measurement.service.ZoneService;
 import uni.miskolc.ips.ilona.measurement.service.exception.DatabaseUnavailableException;
 import uni.miskolc.ips.ilona.measurement.service.exception.ZoneNotFoundException;
+import uni.miskolc.ips.ilona.positioning.model.MeasurementToInstanceConverter;
 import uni.miskolc.ips.ilona.positioning.model.neuralnetwork.NeuralNetwork;
-import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instance;
 
 public class NeuralNetworkTest {
@@ -55,22 +47,13 @@ public class NeuralNetworkTest {
 	}
 
 	@Ignore
-	public void deserializeNeuralNetworkIsTheSame() throws FileNotFoundException, IOException, Exception {
-		//NeuralNetwork expected = new NeuralNetwork(0.6, 0.7, 140, "13", trainingSetPath);
-		String serializedPath = "src/resources/neuralnetworkExample.ser";
-		//NeuralNetwork.serializeNeuralNetwork(expected, serializedPath);
-		NeuralNetwork actual = NeuralNetwork.deserialization(serializedPath);
-		//Assert.assertEquals(expected, actual);
-	}
-
-	@Ignore
 	public void deserializedNeuralNetworkGivesTheSameResult() throws FileNotFoundException, IOException, Exception {
 		NeuralNetwork neuralnetwork = new NeuralNetwork(0.6, 0.7, 140, "13", trainingSetPath);
 		String serializedPath = "src/resources/neuralnetwork.ser";
 		NeuralNetwork.serializeNeuralNetwork(neuralnetwork, serializedPath);
 		NeuralNetworkPositioning neuralNetworkPositioning = new NeuralNetworkPositioning(zoneService, serializedPath);
 		Measurement measurement = instanceFromJSON();
-		Instance instance = neuralnetwork.convertMeasurementToInstance(measurement);
+		Instance instance = MeasurementToInstanceConverter.convertMeasurementToInstance(measurement, neuralnetwork.getHeader());
 		double cls = neuralnetwork.getMultilayerPerceptron().classifyInstance(instance);
 		Zone zoneresult = zoneService.getZone(UUID.fromString(instance.classAttribute().value((int) cls)));
 		Position expected = new Position(zoneresult);
@@ -116,12 +99,13 @@ public class NeuralNetworkTest {
 
 	}
 
-	@Ignore
+	@Test
 	public void determinePositionOfJSONTest() throws FileNotFoundException, IOException, Exception {
 		NeuralNetwork neuralnetwork = new NeuralNetwork(0.9, 0.7, 280, "18",
-				"/home/ilona/probaworkspace/neuralnetwork/trainingset.txt");
+				"src/resources/training_set.arff");
 		String serializedPath = "src/resources/neuralnetwork.ser";
 		NeuralNetwork.serializeNeuralNetwork(neuralnetwork, serializedPath);
+		System.out.println(neuralnetwork.getHeader());
 		NeuralNetworkPositioning neuralNetworkPositioning = new NeuralNetworkPositioning(zoneService, serializedPath);
 		Measurement measurement = instanceFromJSON();
 		Position result = neuralNetworkPositioning.determinePosition(measurement);
@@ -200,6 +184,11 @@ public class NeuralNetworkTest {
 		zone22.setId(UUID.fromString("12d4a4a3-b9b9-4ad8-99d2-c64ec3a2de0f"));
 		
 		Collection<Zone> zones = new ArrayList<Zone>() {
+			/**
+			 * 
+			 */
+			private static final long serialVersionUID = 6601769231477463523L;
+
 			{
 				add(zone1);
 				add(zone2);
@@ -253,25 +242,6 @@ public class NeuralNetworkTest {
 		EasyMock.replay(zoneService);
 	}
 
-	private Measurement createMeasurement() {
-		MeasurementBuilder measbuilder = new MeasurementBuilder();
-
-		BluetoothTags bluetooth = new BluetoothTags(new HashSet<String>(
-				Arrays.asList(new String[] { "00:16:53:4c:fa:67", "00:16:53:4c:f5:2d", "00:10:60:AA:36:F2" })));
-		Magnetometer magneto = new Magnetometer(12, 32, 23, 0.5);
-		RFIDTags rfid = new RFIDTags(new HashSet<byte[]>());
-		rfid.addTag(new byte[] { (byte) 12 });
-		WiFiRSSI wifi = new WiFiRSSI();
-		wifi.setRSSI("ait-l15", -0.4);
-		wifi.setRSSI("n", -1.2);
-		wifi.setRSSI("bosch_telemetry", -3.2);
-		measbuilder.setbluetoothTags(bluetooth);
-		measbuilder.setMagnetometer(magneto);
-		measbuilder.setRFIDTags(rfid);
-		measbuilder.setWifiRSSI(wifi);
-		Measurement result = measbuilder.build();
-		return result;
-	}
 
 	private Measurement instanceFromJSON() throws JsonParseException, JsonMappingException, IOException {
 		ObjectMapper mapper = new ObjectMapper();

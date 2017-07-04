@@ -1,6 +1,5 @@
 package uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -8,16 +7,14 @@ import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-
 import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
 import uni.miskolc.ips.ilona.measurement.model.position.Coordinate;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.measurement.service.ZoneService;
+import uni.miskolc.ips.ilona.positioning.model.MeasurementToInstanceConverter;
 import uni.miskolc.ips.ilona.positioning.model.neuralnetwork.NeuralNetwork;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
-import weka.core.Debug.Log;
 import weka.core.Instance;
 
 /**
@@ -152,7 +149,7 @@ public class NeuralNetworkPositioningOverSensors implements PositioningService {
 			NeuralNetwork neuralNetwork = sensors.get(s);
 
 			if (neuralNetwork != null) {
-				Instance instance = neuralNetwork.convertMeasurementToInstance(measurement);
+				Instance instance = MeasurementToInstanceConverter.convertMeasurementToInstance(measurement, neuralNetwork.getHeader());
 		
 				if (measurement.getMagnetometer() != null && s.equals(sensorNames.MAGNETOMETER)) {
 					System.out.println("M");
@@ -209,7 +206,6 @@ public class NeuralNetworkPositioningOverSensors implements PositioningService {
 				votes.add(weights.get(neuralNetwork));
 			}
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

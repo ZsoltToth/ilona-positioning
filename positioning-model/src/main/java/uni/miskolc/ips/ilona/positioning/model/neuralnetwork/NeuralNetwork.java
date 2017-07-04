@@ -3,26 +3,18 @@ package uni.miskolc.ips.ilona.positioning.model.neuralnetwork;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
-import java.lang.reflect.Field;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-
-
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
+import uni.miskolc.ips.ilona.positioning.model.MeasurementToInstanceConverter;
 import weka.classifiers.evaluation.Evaluation;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Attribute;
-import weka.core.DenseInstance;
-import weka.core.Instance;
 import weka.core.Instances;
 import weka.core.converters.ConverterUtils.DataSource;
 
@@ -62,6 +54,10 @@ public class NeuralNetwork implements Serializable {
 	 */
 	private static final Logger LOG = LogManager.getLogger(NeuralNetwork.class);
 
+	/**
+	 * The header attributes of the multilayer perceptron classifier.
+	 */
+	private List<Attribute> header;
 	/**
 	 * The constructor of the NeuralNetwork.
 	 * @param learningRate The learningRate of the MultilayerPerceptron.
@@ -126,15 +122,9 @@ public class NeuralNetwork implements Serializable {
 		mlp.setTrainingTime(trainingTime);
 		mlp.setHiddenLayers(hiddenLayers);
 		mlp.buildClassifier(trainingInstances);
+		this.header = MeasurementToInstanceConverter.getHeader(trainingInstances);
 		return mlp;
 
-	}
-
-	private Instances readInstances(final String filepath) throws IOException, FileNotFoundException {
-		FileReader instancesreader = new FileReader(filepath);
-		Instances instances = new Instances(instancesreader);
-		instances.setClassIndex(instances.numAttributes() - 1);
-		return instances;
 	}
 
 	public final double getLearningRate() {
@@ -155,6 +145,10 @@ public class NeuralNetwork implements Serializable {
 
 	public final MultilayerPerceptron getMultilayerPerceptron() {
 		return mlp;
+	}
+	
+	public final List<Attribute> getHeader(){
+		return header;
 	}
 
 	public static final void serializeNeuralNetwork(NeuralNetwork serializable, final String targetPath)
@@ -204,135 +198,6 @@ public class NeuralNetwork implements Serializable {
 		return super.hashCode();
 	}
 
-	/**
-	 * Convert the measurement to Instance for the NeuralNetwork.
-	 * 
-	 * @param meas
-	 *            The incoming measurement
-	 * @return The instance of the converted measurement.
-	 */
-	public final Instance convertMeasurementToInstance(final Measurement meas) {
-		ArrayList<Attribute> header = getHeader(this.getMultilayerPerceptron());
-
-		Instance instance = new DenseInstance(header.size());
-		List<Attribute> attributes = new ArrayList<Attribute>();
-		for (int i = 0; i < header.size(); i++) {
-			attributes.add(new Attribute(header.get(i).name()));
-		}
-		LOG.info("The attributes are " + attributes.toString());
-		LOG.info("The incoming measurement is  " + meas.toString());
-		for (int i = 0; i < attributes.size(); i++) {
-			if ((attributes.get(i).name().equals("measx")|| attributes.get(i).name().equalsIgnoreCase("magnetometerX")) && meas.getMagnetometer() != null) {
-				instance.setValue(i, meas.getMagnetometer().getxAxis());
-			} else if ((attributes.get(i).name().equals("measy")|| attributes.get(i).name().equalsIgnoreCase("magnetometery"))  && meas.getMagnetometer() != null) {
-				instance.setValue(i, meas.getMagnetometer().getyAxis());
-			} else if ((attributes.get(i).name().equals("measz") || attributes.get(i).name().equalsIgnoreCase("magnetometerz")) && meas.getMagnetometer() != null) {
-				instance.setValue(i, meas.getMagnetometer().getzAxis());
-			} else if (attributes.get(i).name().contains(":")) {
-				instance.setValue(i, measurementSeeBluetooth(meas, attributes.get(i).name()));
-			} else if (attributes.get(i).name().equals(attributes.get(attributes.size() - 1))) {
-				instance.setValue(i, -1);
-			} else {
-				instance.setValue(i, measurementHowSeeWiFi(meas, attributes.get(i).name()));
-			}
-
-		}
-		LOG.info("The created instance is " + instance);
-		System.out.println("The instance is "+instance);
-		return instance;
-	}
-
-	/**
-	 * Determine if the attribute bluetooth device is seen by the measurement.
-	 * 
-	 * @param meas
-	 *            The incoming measurement.
-	 * @param bluetooth
-	 *            The bluetooth device name.
-	 * @return 1 if seen, 0 if not seen.
-	 */
-	private int measurementSeeBluetooth(final Measurement meas, final String bluetooth) {
-		String hardwareAddress = getBluetoothHardwareAddress(bluetooth);
-		if (meas.getBluetoothTags() != null) {
-			Set<String> measurementBluetoothTags = meas.getBluetoothTags().getTags();
-			for (String bl : measurementBluetoothTags) {
-				if (bl.toUpperCase().contains(hardwareAddress.toUpperCase())) {
-					return 1;
-				}
-			}
-		}
-		return 0;
-	}
-
-	/**
-	 * Determine if the attribute Wifi access point is heard by the measurement.
-	 * 
-	 * @param meas
-	 *            The incoming measurement.
-	 * @param wifi
-	 *            The name of Wifi access point.
-	 * @return The dB value of the hearing, -100 if it is not heard.
-	 */
-	private double measurementHowSeeWiFi(final Measurement meas, final String wifi) {
-		double notSeenWifi = -100;
-		if (meas.getWifiRSSI() != null) {
-			if (meas.getWifiRSSI().getRssiValues().containsKey(wifi)) {
-				return meas.getWifiRSSI().getRSSI(wifi);
-			}
-			if(meas.getWifiRSSI().getRssiValues().containsKey(wifi.trim())){
-				return meas.getWifiRSSI().getRSSI(wifi.trim());
-			}
-		}
-		return notSeenWifi;
-	}
-
-	/**
-	 * A method to cut the Bluetooth hardware address out of the Bluetooth
-	 * device name.
-	 * 
-	 * @param bluetooth
-	 *            The name of the Bluetooth device.
-	 * @return The hardware address of the Bluetooth device.
-	 */
-	private String getBluetoothHardwareAddress(final String bluetooth) {
-		String[] bluetoothAddress = bluetooth.split(":");
-		StringBuilder builder = new StringBuilder();
-		builder.append(bluetoothAddress[0].substring(bluetoothAddress[0].length() - 2, bluetoothAddress[0].length()));
-		builder.append(":");
-		for (int i = 1; i < bluetoothAddress.length; i++) {
-			builder.append(bluetoothAddress[i]);
-			builder.append(":");
-		}
-		builder.setLength(builder.length() - 1);
-		String result = builder.toString();
-		return result;
-	}
-
-	/**
-	 * A method to get the traning header of a MultilayerPerceptron.
-	 * 
-	 * @param mlp
-	 *            The MultilayerPerceptron of the NeuralNetwork.
-	 * @return List of the training attributes.
-	 */
-	private ArrayList<Attribute> getHeader(final MultilayerPerceptron mlp) {
-		try {
-			Field field = MultilayerPerceptron.class.getDeclaredField("m_instances");
-			field.setAccessible(true);
-			Object value = field.get(mlp);
-			field.setAccessible(false);
-			Instances header = (Instances) value;
-
-			ArrayList<Attribute> attributes = new ArrayList<Attribute>();
-			for (int i = 0; i < header.numAttributes(); i++) {
-				attributes.add(header.attribute(i));
-			}
-			return attributes;
-		} catch (NoSuchFieldException e) {
-			throw new RuntimeException(e);
-		} catch (IllegalAccessException e) {
-			throw new RuntimeException(e);
-		}
-	}
+	
 
 }
