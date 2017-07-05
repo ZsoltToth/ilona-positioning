@@ -6,11 +6,9 @@
 	<parent>
 		<groupId>uni.miskolc.ips.ilona</groupId>
 		<artifactId>positioning</artifactId>
-		<version>0.1.2-SNAPSHOT</version>
+		<version>0.1.3-SNAPSHOT</version>
 	</parent>
-	<groupId>uni.miskolc.ips.ilona</groupId>
 	<artifactId>positioning-persist-mysql</artifactId>
-	<version>0.1.2-SNAPSHOT</version>
 	<name>positioning-persist-mysql</name>
 	<url>http://maven.apache.org</url>
 	<properties>
@@ -36,7 +34,7 @@
 		<dependency>
 			<groupId>uni.miskolc.ips.ilona</groupId>
 			<artifactId>positioning-persist</artifactId>
-			<version>0.1.2-SNAPSHOT</version>
+			<version>0.1.3-SNAPSHOT</version>
 		</dependency>
 	</dependencies>
 

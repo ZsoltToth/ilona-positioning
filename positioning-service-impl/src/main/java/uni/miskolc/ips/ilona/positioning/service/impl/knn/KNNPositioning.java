@@ -12,6 +12,7 @@ import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.measurement.service.MeasurementService;
 import uni.miskolc.ips.ilona.measurement.service.exception.DatabaseUnavailableException;
+import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 import uni.miskolc.ips.ilona.positioning.model.knn.Neighbour;
 import uni.miskolc.ips.ilona.positioning.model.knn.NeighbourComparator;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
@@ -89,8 +90,12 @@ public abstract class KNNPositioning implements PositioningService {
 	 * @param measurement
 	 *            The measurement we want to know the Position.
 	 * @return position The estimated position of the measurement.
+	 * @throws InvalidMeasurementException 
 	 */
-	public final Position determinePosition(final Measurement measurement) throws IllegalArgumentException {
+	public final Position determinePosition(final Measurement measurement) throws IllegalArgumentException, InvalidMeasurementException {
+		if(measurement.getId() == null){
+			throw new InvalidMeasurementException();
+		}
 		final ArrayList<Measurement> measurements;
 		try {
 			measurements = new ArrayList<Measurement>(measurementservice.readMeasurements());

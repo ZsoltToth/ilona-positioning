@@ -22,6 +22,7 @@ import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.measurement.service.ZoneService;
 import uni.miskolc.ips.ilona.measurement.service.exception.DatabaseUnavailableException;
 import uni.miskolc.ips.ilona.measurement.service.exception.ZoneNotFoundException;
+import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 import uni.miskolc.ips.ilona.positioning.model.MeasurementToInstanceConverter;
 import uni.miskolc.ips.ilona.positioning.model.neuralnetwork.NeuralNetwork;
 import weka.core.Instance;
@@ -114,7 +115,7 @@ public class NeuralNetworkTest {
 	}
 
 	@Ignore
-	public void deserializeNeuralNetwork() throws JsonParseException, JsonMappingException, IOException {
+	public void deserializeNeuralNetwork() throws JsonParseException, JsonMappingException, IOException, InvalidMeasurementException {
 		String serializedPath = "src/resources/neuralnetwork.ser";
 		NeuralNetworkPositioning neuralNetworkPositioning = new NeuralNetworkPositioning(zoneService, serializedPath);
 		Measurement measurement = instanceFromJSON();

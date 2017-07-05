@@ -12,6 +12,7 @@ import uni.miskolc.ips.ilona.measurement.model.position.Coordinate;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.measurement.service.ZoneService;
+import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 import uni.miskolc.ips.ilona.positioning.model.MeasurementToInstanceConverter;
 import uni.miskolc.ips.ilona.positioning.model.neuralnetwork.NeuralNetwork;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
@@ -139,8 +140,12 @@ public class NeuralNetworkPositioningOverSensors implements PositioningService {
 	 *            The incoming measurement to estimate it's Position.
 	 * @return The Position calculated based on the weight of Position estimated
 	 *         with each sensor.
+	 * @throws InvalidMeasurementException 
 	 */
-	public final Position determinePosition(final Measurement measurement) {
+	public final Position determinePosition(final Measurement measurement) throws InvalidMeasurementException {
+		if(measurement == null){
+			throw new InvalidMeasurementException();
+		}
 		zones = new ArrayList<Zone>();
 		int maxsize = sensors.size();
 		votes = new ArrayList<Double>(maxsize);

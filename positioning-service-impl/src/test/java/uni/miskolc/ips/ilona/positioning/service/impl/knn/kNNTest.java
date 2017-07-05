@@ -4,8 +4,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 
 import org.easymock.EasyMock;
@@ -13,8 +11,6 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import uni.miskolc.ips.ilona.measurement.model.measurement.BluetoothTags;
@@ -28,6 +24,7 @@ import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.measurement.service.MeasurementService;
 import uni.miskolc.ips.ilona.measurement.service.exception.DatabaseUnavailableException;
+import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 
 public class kNNTest {
 	private ArrayList<Measurement> measurementsList;
@@ -36,7 +33,7 @@ public class kNNTest {
 	private MeasurementDistanceCalculator distanceCalculator;
 	private int k;
 	private KNNSimplePositioning simplePositioning;
-	private Zone z1, z2, z3, z4;
+	private Zone z1, z2, z3;
 
 	@Before
 	public void setUp() throws DatabaseUnavailableException {
@@ -57,7 +54,7 @@ public class kNNTest {
 	
 	
 	@Test
-	public void emptyMeasurementsListTest() throws DatabaseUnavailableException {
+	public void emptyMeasurementsListTest() throws DatabaseUnavailableException, IllegalArgumentException, InvalidMeasurementException {
 		measurementService = EasyMock.createMock(MeasurementService.class);
 		EasyMock.expect(measurementService.readMeasurements()).andReturn(new ArrayList<Measurement>());
 		EasyMock.replay(measurementService);
@@ -77,7 +74,7 @@ public class kNNTest {
 	}
 
 	@Test
-	public void majorVote() throws DatabaseUnavailableException {
+	public void majorVote() throws DatabaseUnavailableException, IllegalArgumentException, InvalidMeasurementException {
 		mockingMeasurementService();
 
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
@@ -108,7 +105,7 @@ public class kNNTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void tooHighKTest() throws DatabaseUnavailableException {
+	public void tooHighKTest() throws DatabaseUnavailableException, IllegalArgumentException, InvalidMeasurementException {
 		mockingMeasurementService();
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(0), incomingMeasurement)).andReturn(1.6);

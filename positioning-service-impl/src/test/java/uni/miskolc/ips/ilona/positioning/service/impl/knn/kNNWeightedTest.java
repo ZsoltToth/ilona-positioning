@@ -8,10 +8,6 @@ import org.easymock.EasyMock;
 import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.TypeSafeDiagnosingMatcher;
-import org.hamcrest.TypeSafeMatcher;
-import org.hamcrest.core.*;
 import org.junit.Before;
 import org.junit.Test;
 import static org.junit.Assert.*;
@@ -27,6 +23,7 @@ import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.measurement.service.MeasurementService;
 import uni.miskolc.ips.ilona.measurement.service.exception.DatabaseUnavailableException;
+import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 
 public class kNNWeightedTest {
 	private ArrayList<Measurement> measurementsList;
@@ -46,7 +43,7 @@ public class kNNWeightedTest {
 	}
 
 	@Test
-	public void weightedOverMajorVoteTest() throws DatabaseUnavailableException {
+	public void weightedOverMajorVoteTest() throws DatabaseUnavailableException, IllegalArgumentException, InvalidMeasurementException {
 		mockingMeasurementService();
 
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
@@ -64,7 +61,7 @@ public class kNNWeightedTest {
 	}
 
 	@Test
-	public void emptyMeasurementsListTest() throws DatabaseUnavailableException {
+	public void emptyMeasurementsListTest() throws DatabaseUnavailableException, IllegalArgumentException, InvalidMeasurementException {
 		measurementService = EasyMock.createMock(MeasurementService.class);
 		EasyMock.expect(measurementService.readMeasurements()).andReturn(new ArrayList<Measurement>());
 		EasyMock.replay(measurementService);
@@ -99,7 +96,7 @@ public class kNNWeightedTest {
 	
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void tooHighKTest() throws DatabaseUnavailableException {
+	public void tooHighKTest() throws DatabaseUnavailableException, IllegalArgumentException, InvalidMeasurementException {
 		mockingMeasurementService();
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(0), incomingMeasurement)).andReturn(1.6);

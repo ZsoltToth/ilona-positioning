@@ -31,7 +31,7 @@ public class EvaluatingThread extends Thread {
 					String layers = hiddenlayer + "";
 					try {
 						this.mlp = new NeuralNetwork(learningRate, momentum, trainingtime, layers, trainingfilepath);
-						double eval = mlp.getEvaluation(trainingfilepath);
+						double eval = mlp.getEvaluation(testfilepath);
 						int exist=0;
 
 						String pathToScan = "/home/ilona/probaworkspace/neuralnetwork/serialized/";

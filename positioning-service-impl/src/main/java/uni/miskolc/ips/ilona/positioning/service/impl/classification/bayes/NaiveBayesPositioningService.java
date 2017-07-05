@@ -15,6 +15,7 @@ import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.measurement.service.MeasurementService;
 import uni.miskolc.ips.ilona.measurement.service.exception.DatabaseUnavailableException;
+import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
 
 /**
@@ -45,7 +46,10 @@ public class NaiveBayesPositioningService implements PositioningService {
 		this.maxMeasurementDistance = maxMeasurementDistance;
 	}
 
-	public Position determinePosition(Measurement measurement) {
+	public Position determinePosition(Measurement measurement) throws InvalidMeasurementException {
+		if(measurement.getId() == null){
+			throw new InvalidMeasurementException();
+		}
 		Collection<Position> positionswithzone = null;
 		Collection<Measurement> measurements;
 		measurementsdistance = new HashMap<>();
