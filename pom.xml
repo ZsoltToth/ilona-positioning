@@ -14,6 +14,10 @@
 		<jackson.version>2.9</jackson.version>
 		<spring.framework.version>4.3.9.RELEASE</spring.framework.version>
 		<spring.integration.version>4.3.10.RELEASE</spring.integration.version>
+		<spring.integration.file.version>4.0.0.RELEASE</spring.integration.file.version>
+		<spring.integration.http.version>4.0.0.RELEASE</spring.integration.http.version>
+
+		<maven.surefire.plugin.version>2.12.4</maven.surefire.plugin.version>
 	</properties>
 
 	<build>
