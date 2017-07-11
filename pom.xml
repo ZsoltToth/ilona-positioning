@@ -13,11 +13,16 @@
 		<log4j.verion>2.2</log4j.verion>
 		<jackson.version>2.9</jackson.version>
 		<spring.framework.version>4.3.9.RELEASE</spring.framework.version>
-		<spring.integration.version>4.3.10.RELEASE</spring.integration.version>
-		<spring.integration.file.version>4.0.0.RELEASE</spring.integration.file.version>
-		<spring.integration.http.version>4.0.0.RELEASE</spring.integration.http.version>
-
+		<spring.integration.version>4.3.9.RELEASE</spring.integration.version>
+		<!--
+		<spring.integration.file.version>4.3.10.RELEASE</spring.integration.file.version>
+		<spring.integration.http.version>4.3.10.RELEASE</spring.integration.http.version>
+		-->
 		<maven.surefire.plugin.version>2.12.4</maven.surefire.plugin.version>
+
+		<!-- Run Config Properties -->
+		<measurement.host>localhost</measurement.host>
+		<measurement.port>8080</measurement.port>
 	</properties>
 
 	<build>
@@ -82,4 +87,14 @@
 	<scm>
 		<url>https://github.com/ZsoltToth/ilona.git</url>
 	</scm>
+
+	<profiles>
+		<profile>
+			<id>si-measurement-template</id>
+			<properties>
+				<measurement.host>localhost</measurement.host>
+				<measurement.port>8080</measurement.port>
+			</properties>
+		</profile>
+	</profiles>
 </project>
