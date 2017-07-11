@@ -5,5 +5,5 @@ import uni.miskolc.ips.ilona.measurement.model.position.Position;
 
 public interface PositioningService {
 
-	public Position determinePosition(Measurement measurement);
+	Position determinePosition(Measurement measurement);
 }

@@ -27,10 +27,6 @@
     	<artifactId>positioning-model</artifactId>
     	<version>0.1.2-SNAPSHOT</version>
     </dependency>
-    <dependency>
-    	<groupId>uni.miskolc.ips.ilona</groupId>
-    	<artifactId>measurement-persist</artifactId>
-    	<version>0.1.2-SNAPSHOT</version>
-    </dependency>
+
   </dependencies>
 </project>
