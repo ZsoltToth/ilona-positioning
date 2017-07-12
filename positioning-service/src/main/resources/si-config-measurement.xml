@@ -33,7 +33,16 @@
             service-interface="uni.miskolc.ips.ilona.positioning.service.gateway.ZoneGateway"
             id="ZoneGateway" default-request-channel="ZoneReqChannel"/>
 
+    <int:gateway
+            service-interface="uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway"
+            id="MeasurementGateway" default-request-channel="MeasurementReqChannel"/>
+
+
+
     <int:channel id="ZoneReqChannel"/>
+
+    <int:channel id="MeasurementReqChannel"/>
+
 
 
 
@@ -42,6 +51,14 @@
                                 http-method="GET"
                                 extract-request-payload="true"
                                 expected-response-type="uni.miskolc.ips.ilona.measurement.model.position.Zone[]">
+    </int-http:outbound-gateway>
+
+
+    <int-http:outbound-gateway  request-channel="MeasurementReqChannel"
+                                url="http://${measurement.host}:${measurement.port}/ilona/resources/listMeasurements"
+                                http-method="GET"
+                                extract-request-payload="true"
+                                expected-response-type="uni.miskolc.ips.ilona.measurement.model.measurement.Measurement[]">
     </int-http:outbound-gateway>
 
 
