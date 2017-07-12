@@ -19,9 +19,14 @@
 
     <int:channel id="ZoneReqChannel"/>
 
-    <int-http:outbound-gateway request-channel="ZoneReqChannel"
-                               url="http://grabowski.iit.uni-miskolc.hu:8080/ilona/listZones"
-                               http-method="GET"
-                               expected-response-type="uni.miskolc.ips.ilona.measurement.model.position.Zone">
+
+
+    <int-http:outbound-gateway  request-channel="ZoneReqChannel"
+                                url="http://grabowski.iit.uni-miskolc.hu:8080/ilona/listZones"
+                                http-method="GET"
+                                extract-request-payload="true"
+                                expected-response-type="uni.miskolc.ips.ilona.measurement.model.position.Zone[]">
     </int-http:outbound-gateway>
+
+
 </beans>

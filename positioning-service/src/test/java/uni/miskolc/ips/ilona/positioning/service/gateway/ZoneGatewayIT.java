@@ -7,6 +7,9 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import uni.miskolc.ips.ilona.measurement.model.position.Zone;
+
+import java.util.Collection;
 
 /**
  * Created by tothzs on 2017.07.11..
@@ -43,5 +46,13 @@ public class ZoneGatewayIT {
                 String.format("%s:%d/ilona/listZones",
                         System.getProperty(sysEnvMeasurementHost),
                         Integer.parseInt(System.getProperty(sysEnvMeasurementPort))));
+        ZoneGateway gateway = context.getBean("ZoneGateway", ZoneGateway.class);
+        Collection<Zone> result = gateway.listZones();
+        System.out.println("---> "+result);
+        System.out.println("--->"+result.size());
+        System.out.println(result.getClass());
+        for(Zone zone : result){
+            System.out.println(String.format("%s : %s",zone.getId(), zone.getName()));
+        }
     }
 }
