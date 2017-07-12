@@ -2,6 +2,7 @@
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:int="http://www.springframework.org/schema/integration"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
        xmlns:int-stream="http://www.springframework.org/schema/integration/stream"
        xmlns:int-file="http://www.springframework.org/schema/integration/file"
        xmlns:int-http="http://www.springframework.org/schema/integration/http"
@@ -11,7 +12,22 @@
         http://www.springframework.org/schema/integration/stream http://www.springframework.org/schema/integration/stream/spring-integration-stream.xsd
         http://www.springframework.org/schema/integration/http http://www.springframework.org/schema/integration/http/spring-integration-http-4.3.xsd
         http://www.springframework.org/schema/integration/file http://www.springframework.org/schema/integration/file/spring-integration-file.xsd
+        http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
         ">
+
+    <context:property-placeholder
+            properties-ref="systemProperties"/>
+    <!-- Properties Bean linux: git/ilona/ilona/src/main/webapp/WEB-INF/mybatis-configuration.xml -->
+    <!-- Properties Bean windows: mybatis-configuration.xml (default! desktop) -->
+    <bean id="systemProperties"
+          class="org.springframework.beans.factory.config.PropertiesFactoryBean">
+        <property name="properties">
+            <props>
+                <prop key="measurement.host">${measurement.host}</prop>
+                <prop key="measurement.port">${measurement.port}</prop>
+            </props>
+        </property>
+    </bean>
 
     <int:gateway
             service-interface="uni.miskolc.ips.ilona.positioning.service.gateway.ZoneGateway"
@@ -22,7 +38,7 @@
 
 
     <int-http:outbound-gateway  request-channel="ZoneReqChannel"
-                                url="http://grabowski.iit.uni-miskolc.hu:8080/ilona/listZones"
+                                url="http://${measurement.host}:${measurement.port}/ilona/listZones"
                                 http-method="GET"
                                 extract-request-payload="true"
                                 expected-response-type="uni.miskolc.ips.ilona.measurement.model.position.Zone[]">
