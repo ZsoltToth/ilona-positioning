@@ -3,9 +3,7 @@ package uni.miskolc.ips.ilona.positioning.service.impl.knn;
 import uni.miskolc.ips.ilona.measurement.model.measurement.MeasurementDistanceCalculator;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
-import uni.miskolc.ips.ilona.measurement.service.MeasurementService;
 import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
-import uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork.NeuralNetworkPositioning;
 
 import java.util.ArrayList;
 

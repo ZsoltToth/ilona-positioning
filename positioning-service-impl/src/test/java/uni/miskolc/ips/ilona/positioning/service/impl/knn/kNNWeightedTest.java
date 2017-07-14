@@ -21,7 +21,6 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.RFIDTags;
 import uni.miskolc.ips.ilona.measurement.model.measurement.WiFiRSSI;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
-import uni.miskolc.ips.ilona.measurement.service.exception.DatabaseUnavailableException;
 import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
 
 public class kNNWeightedTest {
@@ -42,7 +41,7 @@ public class kNNWeightedTest {
 	}
 
 	@Test
-	public void weightedOverMajorVoteTest() throws DatabaseUnavailableException {
+	public void weightedOverMajorVoteTest(){
 		mockingMeasurementGateway();
 
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
@@ -60,7 +59,7 @@ public class kNNWeightedTest {
 	}
 
 	@Test
-	public void emptyMeasurementsListTest() throws DatabaseUnavailableException {
+	public void emptyMeasurementsListTest(){
 		measurementGateway = EasyMock.createMock(MeasurementGateway.class);
 		EasyMock.expect(measurementGateway.listMeasurements()).andReturn(new ArrayList<Measurement>());
 		EasyMock.replay(measurementGateway);
@@ -80,7 +79,7 @@ public class kNNWeightedTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void negativeKTest() throws DatabaseUnavailableException {
+	public void negativeKTest(){
 		mockingMeasurementGateway();
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(0), incomingMeasurement)).andReturn(1.6);
@@ -95,7 +94,7 @@ public class kNNWeightedTest {
 	
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void tooHighKTest() throws DatabaseUnavailableException {
+	public void tooHighKTest() {
 		mockingMeasurementGateway();
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(0), incomingMeasurement)).andReturn(1.6);
@@ -111,7 +110,7 @@ public class kNNWeightedTest {
 	
 
 	@Test(expected = IllegalArgumentException.class)
-	public void nullArgumentTest() throws DatabaseUnavailableException {
+	public void nullArgumentTest() {
 		mockingMeasurementGateway();
 		weightedPositioning = new KNNWeightedPositioning(null, measurementGateway, k);
 	}
@@ -208,7 +207,7 @@ public class kNNWeightedTest {
 
 	}
 
-	private void mockingMeasurementGateway() throws DatabaseUnavailableException {
+	private void mockingMeasurementGateway(){
 		measurementGateway = EasyMock.createMock(MeasurementGateway.class);
 		EasyMock.expect(measurementGateway.listMeasurements()).andReturn(measurementsList);
 		EasyMock.replay(measurementGateway);

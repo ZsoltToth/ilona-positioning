@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import uni.miskolc.ips.ilona.measurement.model.measurement.MeasurementDistanceCalculator;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
-import uni.miskolc.ips.ilona.measurement.service.MeasurementService;
 import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
 
 /**
@@ -20,8 +19,7 @@ public class KNNWeightedPositioning extends KNNPositioning {
 	 * @param distanceCalculator
 	 *            The distance function used in k-NN.
 	 * @param measurementGateway
-	 *            The measurementGateway provide access to the measurements in
-	 *            the database
+	 *            The measurementGateway provide the measurements
 	 * @param k
 	 *            is the k parameter of the k Nearest Neighbour algorithm.
 	 */

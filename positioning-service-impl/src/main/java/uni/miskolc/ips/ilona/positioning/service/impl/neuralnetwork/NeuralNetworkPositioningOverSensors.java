@@ -1,10 +1,7 @@
 package uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -14,8 +11,8 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
 import uni.miskolc.ips.ilona.measurement.model.position.Coordinate;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
-import uni.miskolc.ips.ilona.measurement.service.ZoneService;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
+import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneGateway;
 import weka.core.Debug.Log;
 import weka.core.Instance;
 
@@ -59,7 +56,7 @@ public class NeuralNetworkPositioningOverSensors implements PositioningService {
 	/**
 	 * A service for get the Zone instances from the database.
 	 */
-	private ZoneService zoneService;
+	private ZoneGateway zoneGateway;
 	/**
 	 * A List to contain the summed weights of the element at the same index of
 	 * zones List.
@@ -83,8 +80,8 @@ public class NeuralNetworkPositioningOverSensors implements PositioningService {
 	/**
 	 * The constructor for the NeuralNetworkPositioningOverSensors class.
 	 * 
-	 * @param zoneService
-	 *            The service for get the Zone instances from the database.
+	 * @param zoneGateway
+	 *            The gateway for get the Zones.
 	 * @param bluetoothWeight
 	 *            The weight of the estimated Zone based on only Bluetooth
 	 *            sensor values.
@@ -104,11 +101,11 @@ public class NeuralNetworkPositioningOverSensors implements PositioningService {
 	 *            The path of the serialized NeuralNetwork of only Wifi sensor
 	 *            values.
 	 */
-	public NeuralNetworkPositioningOverSensors(final ZoneService zoneService, final double bluetoothWeight,
+	public NeuralNetworkPositioningOverSensors(final ZoneGateway zoneGateway, final double bluetoothWeight,
 			final double magnetometerWeight, final double wifiWeight, final String pathOfBluetoothNeuralNetwork,
 			final String pathToMagnetometerNeuralNetwork, final String pathToWifiNeuralNetwork) {
 		super();
-		this.zoneService = zoneService;
+		this.zoneGateway = zoneGateway;
 
 		NeuralNetwork bluetoothNeuralNetwork = NeuralNetwork.deserialization(pathOfBluetoothNeuralNetwork);
 		NeuralNetwork magnetometerNeuralNetwork = NeuralNetwork.deserialization(pathToMagnetometerNeuralNetwork);
@@ -199,7 +196,15 @@ public class NeuralNetworkPositioningOverSensors implements PositioningService {
 		double cls;
 		try {
 			cls = neuralNetwork.getMultilayerPerceptron().classifyInstance(instance);
-			Zone result = zoneService.getZone(UUID.fromString(instance.classAttribute().value((int) cls)));
+			Collection<Zone> gatewayZones = zoneGateway.listZones();
+			Zone result = Zone.UNKNOWN_POSITION;
+			for(Zone z : gatewayZones){
+				if(z.getId().equals(UUID.fromString(instance.classAttribute().value((int) cls)))){
+					result = z;
+					break;
+				}
+			}
+
 			if (zones.contains(result)) {
 				int index = zones.indexOf(result);
 				incrementVotes(index, weights.get(neuralNetwork));

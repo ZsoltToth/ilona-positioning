@@ -33,11 +33,6 @@
 			<artifactId>positioning-persist</artifactId>
 			<version>0.1.2-SNAPSHOT</version>
 		</dependency>
-		<dependency>
-			<groupId>uni.miskolc.ips.ilona</groupId>
-			<artifactId>measurement-service</artifactId>
-			<version>0.1.2-SNAPSHOT</version>
-		</dependency>
 
 	<dependency>
 		<groupId>org.easymock</groupId>

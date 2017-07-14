@@ -7,18 +7,13 @@ import org.junit.Test;
 import uni.miskolc.ips.ilona.measurement.model.measurement.*;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
-import uni.miskolc.ips.ilona.measurement.service.exception.DatabaseUnavailableException;
-import uni.miskolc.ips.ilona.positioning.service.PositioningService;
 import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
-import uni.miskolc.ips.ilona.positioning.service.impl.knn.KNNSimplePositioning;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertThat;
 
 /**
  * Created by tamas on 2017.07.13..
@@ -47,7 +42,7 @@ public class NaiveBayesTest {
     }
 
     @Test
-    public void emptyMeasurementsListTest() throws DatabaseUnavailableException {
+    public void emptyMeasurementsListTest() {
         measurementGateway = EasyMock.createMock(MeasurementGateway.class);
         EasyMock.expect(measurementGateway.listMeasurements()).andReturn(new ArrayList<Measurement>());
         EasyMock.replay(measurementGateway);
@@ -60,19 +55,19 @@ public class NaiveBayesTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void negativeMaxDistanceTest() throws DatabaseUnavailableException {
+    public void negativeMaxDistanceTest() {
         mockingMeasurementGateway();
         bayesPositioning = new NaiveBayesPositioningService( measurementGateway, distanceCalculator,-100);
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void nullGatewayTest() throws DatabaseUnavailableException {
+    public void nullGatewayTest() {
         bayesPositioning = new NaiveBayesPositioningService( null, distanceCalculator,100);
     }
 
 
     @Test
-    public void workingAsExpected() throws DatabaseUnavailableException {
+    public void workingAsExpected() {
         mockingMeasurementGateway();
         bayesPositioning = new NaiveBayesPositioningService( measurementGateway, distanceCalculator,100);
         Position result =bayesPositioning.determinePosition(incomingMeasurement);
@@ -172,7 +167,7 @@ public class NaiveBayesTest {
         z3 = new Zone("103");
     }
 
-    private void mockingMeasurementGateway() throws DatabaseUnavailableException {
+    private void mockingMeasurementGateway() {
         measurementGateway = EasyMock.createMock(MeasurementGateway.class);
         EasyMock.expect(measurementGateway.listMeasurements()).andReturn(measurementsList);
         EasyMock.replay(measurementGateway);

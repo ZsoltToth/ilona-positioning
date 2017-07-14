@@ -5,8 +5,6 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.MeasurementDistanceCa
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
-import uni.miskolc.ips.ilona.measurement.service.MeasurementService;
-import uni.miskolc.ips.ilona.measurement.service.exception.DatabaseUnavailableException;
 
 import java.util.ArrayList;
 
@@ -32,7 +30,7 @@ public abstract class KNNPositioning implements PositioningService {
 	 */
 	private final MeasurementDistanceCalculator distanceCalculator;
 	/**
-	 * A service for access to the measurements in the database.
+	 * A gateway which provides the measurements
 	 */
 	private final MeasurementGateway measurementGateway;
 	/**
