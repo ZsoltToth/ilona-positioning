@@ -117,7 +117,8 @@
 				</configuration>
 			</plugin>
 		</plugins>
-		<finalName>ilona-measurement</finalName>
+		<finalName>ilona-positioning</finalName>
+
 
 	</build>
 </project>

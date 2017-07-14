@@ -63,6 +63,7 @@
 		<module>positioning-controller</module>
 		<module>positioning-persist</module>
 		<module>positioning-persist-mysql</module>
+		<module>positioning-web</module>
 	</modules>
 	
 	<repositories>

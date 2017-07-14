@@ -47,7 +47,7 @@
 
 
     <int-http:outbound-gateway  request-channel="ZoneReqChannel"
-                                url="http://${measurement.host}:${measurement.port}/ilona/listZones"
+                                url="http://${measurement.host}:${measurement.port}/ilona-measurement/listZones"
                                 http-method="GET"
                                 extract-request-payload="true"
                                 expected-response-type="uni.miskolc.ips.ilona.measurement.model.position.Zone[]">
@@ -55,7 +55,7 @@
 
 
     <int-http:outbound-gateway  request-channel="MeasurementReqChannel"
-                                url="http://${measurement.host}:${measurement.port}/ilona/resources/listMeasurements"
+                                url="http://${measurement.host}:${measurement.port}/ilona-measurement/resources/listMeasurements"
                                 http-method="GET"
                                 extract-request-payload="true"
                                 expected-response-type="uni.miskolc.ips.ilona.measurement.model.measurement.Measurement[]">
