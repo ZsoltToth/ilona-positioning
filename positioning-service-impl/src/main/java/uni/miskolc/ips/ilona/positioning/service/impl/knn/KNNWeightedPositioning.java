@@ -6,7 +6,7 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.MeasurementDistanceCa
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
-
+import uni.miskolc.ips.ilona.positioning.model.knn.Neighbour;
 /**
  * 
  * @author ilona
@@ -29,7 +29,7 @@ public class KNNWeightedPositioning extends KNNPositioning {
 	}
 
 	@Override
-	protected final Position getMajorVote(final ArrayList<Neighbour> nearestneighbours) {
+	protected final Position doGetMajorVote(final ArrayList<Neighbour> nearestneighbours) {
 		ArrayList<Zone> zones = new ArrayList<Zone>();
 		int maxsize = nearestneighbours.size();
 		double[] votes = new double[maxsize];

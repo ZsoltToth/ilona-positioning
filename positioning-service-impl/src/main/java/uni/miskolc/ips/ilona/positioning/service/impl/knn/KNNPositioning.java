@@ -13,6 +13,10 @@ import java.util.Collections;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
+import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
+import uni.miskolc.ips.ilona.positioning.model.knn.Neighbour;
+import uni.miskolc.ips.ilona.positioning.model.knn.NeighbourComparator;
+import uni.miskolc.ips.ilona.positioning.service.PositioningService;
 
 /**
  * 
@@ -87,8 +91,12 @@ public abstract class KNNPositioning implements PositioningService {
 	 * @param measurement
 	 *            The measurement we want to know the Position.
 	 * @return position The estimated position of the measurement.
+	 * @throws InvalidMeasurementException
 	 */
-	public final Position determinePosition(final Measurement measurement) throws IllegalArgumentException {
+	public final Position determinePosition(final Measurement measurement) throws IllegalArgumentException, InvalidMeasurementException {
+		if(measurement.getId() == null){
+			throw new InvalidMeasurementException();
+		}
 		final ArrayList<Measurement> measurements;
 		try {
 			measurements = new ArrayList<Measurement>(measurementGateway.listMeasurements());
@@ -103,7 +111,7 @@ public abstract class KNNPositioning implements PositioningService {
 
 		ArrayList<Neighbour> neighbours = getNeighbourList(measurements, measurement);
 		final ArrayList<Neighbour> kNearestNeighbours = getKNearestNeighbour(neighbours);
-		Position result = getMajorVote(kNearestNeighbours);
+		Position result = doGetMajorVote(kNearestNeighbours);
 		LOG.info(String.format("The position of measurement "+ measurement.toString()+" is position "+result.getZone()));
 		LOG.warn(this.getClass().getSimpleName()+","+measurement.getId()+","+measurement.getPosition().getZone().getName()+","+measurement.getPosition().getZone().getId()+","+result.getZone().getName()+","+result.getZone().getId());
 		return result;
@@ -145,12 +153,13 @@ public abstract class KNNPositioning implements PositioningService {
 
 	/**
 	 * Calculates the vote of the neighbours.
-	 * 
+	 * The naming convention indicates that this method must be overridden in concrete classes.
+	 *
 	 * @param nearestneighbours
 	 *            The list of the k Nearest neighbour
 	 * @return the votes of the neighbours
 	 */
-	protected abstract Position getMajorVote(ArrayList<Neighbour> nearestneighbours);
+	protected abstract Position doGetMajorVote(ArrayList<Neighbour> nearestneighbours);
 
 	/**
 	 * 

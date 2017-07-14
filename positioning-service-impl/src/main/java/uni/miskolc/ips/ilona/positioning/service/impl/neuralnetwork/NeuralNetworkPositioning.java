@@ -9,6 +9,9 @@ import org.apache.logging.log4j.Logger;
 import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
+import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
+import uni.miskolc.ips.ilona.positioning.model.MeasurementToInstanceConverter;
+import uni.miskolc.ips.ilona.positioning.model.neuralnetwork.NeuralNetwork;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
 import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneGateway;
 import weka.classifiers.functions.MultilayerPerceptron;
@@ -50,11 +53,15 @@ public class NeuralNetworkPositioning implements PositioningService {
 	 * Determine Position of the given measurement based on the NeuralNetwork.
 	 * @param measurement The incoming measurement to estimate it's Position.
 	 * @return The Position estimated with the NeuralNetwork.
+	 * @throws InvalidMeasurementException
 	 */
-	public final Position determinePosition(final Measurement measurement) {
+	public final Position determinePosition(final Measurement measurement) throws InvalidMeasurementException {
+		if(measurement.getId() == null){
+			throw new InvalidMeasurementException();
+		}
 		Position result;
 		MultilayerPerceptron mlp = neuralNetwork.getMultilayerPerceptron();
-		Instance instance = neuralNetwork.convertMeasurementToInstance(measurement);
+		Instance instance = MeasurementToInstanceConverter.convertMeasurementToInstance(measurement, neuralNetwork.getHeader());
 		double cls;
 		try {
 			cls = mlp.classifyInstance(instance);

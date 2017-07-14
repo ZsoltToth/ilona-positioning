@@ -2,6 +2,9 @@ package uni.miskolc.ips.ilona.positioning.service.impl.classification.bayes;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -10,6 +13,7 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
 import uni.miskolc.ips.ilona.measurement.model.measurement.MeasurementDistanceCalculator;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
+import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
 import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
 
@@ -32,6 +36,7 @@ public class NaiveBayesPositioningService implements PositioningService {
 	private MeasurementGateway measurementGateway;
 	private MeasurementDistanceCalculator measDistanceCalculator;
 	private double maxMeasurementDistance;
+	private Map<UUID, Double> measurementsdistance;
 
 	public NaiveBayesPositioningService(MeasurementGateway measurementGateway,
 			MeasurementDistanceCalculator measDistanceCalculator,
@@ -45,9 +50,13 @@ public class NaiveBayesPositioningService implements PositioningService {
 		this.maxMeasurementDistance = maxMeasurementDistance;
 	}
 
-	public Position determinePosition(Measurement measurement) {
+	public Position determinePosition(Measurement measurement) throws InvalidMeasurementException {
+		if(measurement.getId() == null){
+			throw new InvalidMeasurementException();
+		}
 		Collection<Position> positionswithzone = null;
 		Collection<Measurement> measurements;
+		measurementsdistance = new HashMap<>();
 		try {
 			//positionswithzone = this
 				//	.positionsWithZone(positionservice.readPositions());
@@ -67,6 +76,9 @@ public class NaiveBayesPositioningService implements PositioningService {
 			LOG.warn("No position with zone");
 			return new Position(Zone.UNKNOWN_POSITION);
 		}
+
+		calculatedistances(measurements, measurement);
+
 		Position bestFit = new Position(Zone.UNKNOWN_POSITION);
 		double bestFitProbability = -1;
 		for (Position each : positionswithzone) {
@@ -78,14 +90,22 @@ public class NaiveBayesPositioningService implements PositioningService {
 
 			}
 		}
-		LOG.info(String.format("The position of %s measurement is %s",
-				measurement, bestFit.getZone()));
-		LOG.warn(measurement.getId()+","+measurement.getPosition().getZone().getName()+","+measurement.getPosition().getZone().getId()+","+bestFit.getZone().getName()+","+bestFit.getZone().getId());
+		LOG.info(String.format("The position of %s measurement is %s with %f probability", measurement, bestFit.getZone(),bestFitProbability));
+		LOG.warn(measurement.getId() + "," + measurement.getPosition().getZone().getName() + ","
+				+ measurement.getPosition().getZone().getId() + "," + bestFit.getZone().getName() + ","
+				+ bestFit.getZone().getId()+" probability: "+bestFitProbability);
 		return bestFit;
 	}
 
-	private Collection<Position> positionsWithZone(
-			Collection<Position> positions) {
+	private void calculatedistances(Collection<Measurement> measurements, Measurement meas) {
+		for (Measurement each : measurements) {
+			double distance = measDistanceCalculator.distance(each, meas);
+			measurementsdistance.put(each.getId(), distance);
+		}
+
+	}
+
+	private Collection<Position> positionsWithZone(Collection<Position> positions) {
 		Collection<Position> result = new ArrayList<Position>();
 		for (Position each : positions) {
 			if (each.getZone() == null) {
@@ -102,8 +122,8 @@ public class NaiveBayesPositioningService implements PositioningService {
 		int matches = 0;
 
 		for (Measurement each : measurements) {
-			if (measDistanceCalculator.distance(each, meas) <= maxMeasurementDistance
-					&& (measDistanceCalculator.distance(each, meas)) != -1) {
+			double distance = measurementsdistance.get(each.getId());
+			if (distance <= maxMeasurementDistance && distance != -1) {
 				matches++;
 			}
 		}
@@ -148,7 +168,7 @@ public class NaiveBayesPositioningService implements PositioningService {
 		double result = -1.0;
 		Collection<Measurement> measurementswithPosition = new ArrayList<Measurement>();
 		for (Measurement each : measurements) {
-			if (!each.getPosition().equals(position)) {
+			if (!each.getPosition().getZone().getId().equals(position.getZone().getId())) {
 				continue;
 			}
 			measurementswithPosition.add(each);

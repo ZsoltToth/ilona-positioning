@@ -1,16 +1,20 @@
 package uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork;
 
 import java.io.File;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.core.LoggerContext;
-
 import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
 import uni.miskolc.ips.ilona.measurement.model.position.Coordinate;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
+import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
+import uni.miskolc.ips.ilona.positioning.model.MeasurementToInstanceConverter;
+import uni.miskolc.ips.ilona.positioning.model.neuralnetwork.NeuralNetwork;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
 import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneGateway;
 import weka.core.Debug.Log;
@@ -138,8 +142,12 @@ public class NeuralNetworkPositioningOverSensors implements PositioningService {
 	 *            The incoming measurement to estimate it's Position.
 	 * @return The Position calculated based on the weight of Position estimated
 	 *         with each sensor.
+	 * @throws InvalidMeasurementException
 	 */
-	public final Position determinePosition(final Measurement measurement) {
+	public final Position determinePosition(final Measurement measurement) throws InvalidMeasurementException {
+		if(measurement == null){
+			throw new InvalidMeasurementException();
+		}
 		zones = new ArrayList<Zone>();
 		int maxsize = sensors.size();
 		votes = new ArrayList<Double>(maxsize);
@@ -148,7 +156,7 @@ public class NeuralNetworkPositioningOverSensors implements PositioningService {
 			NeuralNetwork neuralNetwork = sensors.get(s);
 
 			if (neuralNetwork != null) {
-				Instance instance = neuralNetwork.convertMeasurementToInstance(measurement);
+				Instance instance = MeasurementToInstanceConverter.convertMeasurementToInstance(measurement, neuralNetwork.getHeader());
 		
 				if (measurement.getMagnetometer() != null && s.equals(sensorNames.MAGNETOMETER)) {
 					System.out.println("M");

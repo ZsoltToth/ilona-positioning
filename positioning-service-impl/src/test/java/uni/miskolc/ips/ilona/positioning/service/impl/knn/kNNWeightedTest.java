@@ -21,6 +21,7 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.RFIDTags;
 import uni.miskolc.ips.ilona.measurement.model.measurement.WiFiRSSI;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
+import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
 
 public class kNNWeightedTest {
@@ -41,7 +42,7 @@ public class kNNWeightedTest {
 	}
 
 	@Test
-	public void weightedOverMajorVoteTest(){
+	public void weightedOverMajorVoteTest() throws InvalidMeasurementException {
 		mockingMeasurementGateway();
 
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
@@ -59,7 +60,7 @@ public class kNNWeightedTest {
 	}
 
 	@Test
-	public void emptyMeasurementsListTest(){
+	public void emptyMeasurementsListTest() throws InvalidMeasurementException {
 		measurementGateway = EasyMock.createMock(MeasurementGateway.class);
 		EasyMock.expect(measurementGateway.listMeasurements()).andReturn(new ArrayList<Measurement>());
 		EasyMock.replay(measurementGateway);
@@ -94,7 +95,7 @@ public class kNNWeightedTest {
 	
 	
 	@Test(expected = IllegalArgumentException.class)
-	public void tooHighKTest() {
+	public void tooHighKTest() throws InvalidMeasurementException {
 		mockingMeasurementGateway();
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(0), incomingMeasurement)).andReturn(1.6);

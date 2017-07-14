@@ -23,6 +23,7 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.WiFiRSSI;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
+import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 
 public class kNNTest {
 	private ArrayList<Measurement> measurementsList;
@@ -31,7 +32,7 @@ public class kNNTest {
 	private MeasurementDistanceCalculator distanceCalculator;
 	private int k;
 	private KNNSimplePositioning simplePositioning;
-	private Zone z1, z2, z3, z4;
+	private Zone z1, z2, z3;
 
 	@Before
 	public void setUp() {
@@ -52,7 +53,7 @@ public class kNNTest {
 	
 	
 	@Test
-	public void emptyMeasurementsListTest(){
+	public void emptyMeasurementsListTest() throws InvalidMeasurementException {
 		measurementGateway = EasyMock.createMock(MeasurementGateway.class);
 		EasyMock.expect(measurementGateway.listMeasurements()).andReturn(new ArrayList<Measurement>());
 		EasyMock.replay(measurementGateway);
@@ -72,7 +73,7 @@ public class kNNTest {
 	}
 
 	@Test
-	public void majorVote(){
+	public void majorVote() throws InvalidMeasurementException {
 		mockingMeasurementGateway();
 
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
@@ -90,7 +91,7 @@ public class kNNTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void negativeKTest(){
+	public void negativeKTest()throws InvalidMeasurementException{
 		mockingMeasurementGateway();
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(0), incomingMeasurement)).andReturn(1.6);
@@ -103,7 +104,7 @@ public class kNNTest {
 	}
 
 	@Test(expected = IllegalArgumentException.class)
-	public void tooHighKTest(){
+	public void tooHighKTest() throws InvalidMeasurementException{
 		mockingMeasurementGateway();
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(0), incomingMeasurement)).andReturn(1.6);
