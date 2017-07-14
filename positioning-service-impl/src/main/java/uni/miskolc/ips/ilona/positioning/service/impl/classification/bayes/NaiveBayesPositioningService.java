@@ -11,9 +11,9 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.MeasurementDistanceCa
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.measurement.service.MeasurementService;
-import uni.miskolc.ips.ilona.measurement.service.PositionService;
 import uni.miskolc.ips.ilona.measurement.service.exception.DatabaseUnavailableException;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
+import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
 
 /**
  * It is based on the Bayes theorem. P(A|B) = ( P(B|A) * P(A) ) / ( P(B) ) Where
@@ -31,15 +31,18 @@ import uni.miskolc.ips.ilona.positioning.service.PositioningService;
 public class NaiveBayesPositioningService implements PositioningService {
 	private static final Logger LOG = LogManager
 			.getLogger(NaiveBayesPositioningService.class);
-	private MeasurementService measurementservice;
+	private MeasurementGateway measurementGateway;
 	private MeasurementDistanceCalculator measDistanceCalculator;
 	private double maxMeasurementDistance;
 
-	public NaiveBayesPositioningService(MeasurementService measurementservice,
+	public NaiveBayesPositioningService(MeasurementGateway measurementGateway,
 			MeasurementDistanceCalculator measDistanceCalculator,
 			double maxMeasurementDistance) {
 		super();
-		this.measurementservice = measurementservice;
+		if(maxMeasurementDistance<0 || measDistanceCalculator == null || measurementGateway == null){
+			throw  new IllegalArgumentException();
+		}
+		this.measurementGateway = measurementGateway;
 		this.measDistanceCalculator = measDistanceCalculator;
 		this.maxMeasurementDistance = maxMeasurementDistance;
 	}
@@ -50,9 +53,9 @@ public class NaiveBayesPositioningService implements PositioningService {
 		try {
 			//positionswithzone = this
 				//	.positionsWithZone(positionservice.readPositions());
-			measurements = measurementservice
-					.readMeasurements();
-		} catch (DatabaseUnavailableException e) {
+			measurements = measurementGateway
+					.listMeasurements();
+		} catch (Exception e) {
 			LOG.warn(e.getMessage());
 			return new Position(Zone.UNKNOWN_POSITION);
 		}

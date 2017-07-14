@@ -14,6 +14,7 @@ import java.util.Collections;
 
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
+import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
 
 /**
  * 
@@ -33,7 +34,7 @@ public abstract class KNNPositioning implements PositioningService {
 	/**
 	 * A service for access to the measurements in the database.
 	 */
-	private final MeasurementService measurementservice;
+	private final MeasurementGateway measurementGateway;
 	/**
 	 * The k parameter of the k-NN algorithm.
 	 */
@@ -43,20 +44,20 @@ public abstract class KNNPositioning implements PositioningService {
 	 * 
 	 * @param distanceCalculator
 	 *            The distance function used in k-NN.
-	 * @param measurementservice
-	 *            The measurementservice provide access to the measurements in
+	 * @param measurementGateway
+	 *            The measurementGateway provide access to the measurements in
 	 *            the database
 	 * @param k
 	 *            is the k parameter of the k Nearest Neighbour algorithm.
 	 */
 	public KNNPositioning(final MeasurementDistanceCalculator distanceCalculator,
-			final MeasurementService measurementservice, final int k) throws IllegalArgumentException {
+						  final MeasurementGateway measurementGateway, final int k) throws IllegalArgumentException {
 		super();
-		if(distanceCalculator == null || measurementservice == null ){
+		if(distanceCalculator == null || measurementGateway == null ){
 			throw new IllegalArgumentException();
 		}
 		this.distanceCalculator = distanceCalculator;
-		this.measurementservice = measurementservice;
+		this.measurementGateway = measurementGateway;
 		setK(k);
 	}
 
@@ -92,8 +93,8 @@ public abstract class KNNPositioning implements PositioningService {
 	public final Position determinePosition(final Measurement measurement) throws IllegalArgumentException {
 		final ArrayList<Measurement> measurements;
 		try {
-			measurements = new ArrayList<Measurement>(measurementservice.readMeasurements());
-		} catch (DatabaseUnavailableException e) {
+			measurements = new ArrayList<Measurement>(measurementGateway.listMeasurements());
+		} catch (Exception e) {
 			return new Position(Zone.UNKNOWN_POSITION);
 		}
 		if (measurements.size() == 0){

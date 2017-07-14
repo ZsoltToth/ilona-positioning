@@ -1,5 +1,6 @@
 package uni.miskolc.ips.ilona.positioning.service.gateway;
 
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -49,10 +50,7 @@ public class MeasurementGatewayIT {
                         Integer.parseInt(System.getProperty(sysEnvMeasurementPort))));
         MeasurementGateway measurementGateway = context.getBean("MeasurementGateway", MeasurementGateway.class);
         Collection<Measurement> result = measurementGateway.listMeasurements();
-        System.out.println("--->"+result.size());
-        for(Measurement meas : result){
-            System.out.println(meas);
-        }
+        Assert.assertNotEquals(0,result.size());
 
 
 

@@ -6,6 +6,8 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.MeasurementDistanceCa
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.measurement.service.MeasurementService;
+import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
+
 /**
  * 
  * @author ilona
@@ -17,15 +19,15 @@ public class KNNWeightedPositioning extends KNNPositioning {
 	 * 
 	 * @param distanceCalculator
 	 *            The distance function used in k-NN.
-	 * @param measurementservice
-	 *            The measurementservice provide access to the measurements in
+	 * @param measurementGateway
+	 *            The measurementGateway provide access to the measurements in
 	 *            the database
 	 * @param k
 	 *            is the k parameter of the k Nearest Neighbour algorithm.
 	 */
 	public KNNWeightedPositioning(final MeasurementDistanceCalculator distanceCalculator,
-			final MeasurementService measurementservice, final int k) {
-		super(distanceCalculator, measurementservice, k);
+								  final MeasurementGateway measurementGateway, final int k) {
+		super(distanceCalculator, measurementGateway, k);
 	}
 
 	@Override

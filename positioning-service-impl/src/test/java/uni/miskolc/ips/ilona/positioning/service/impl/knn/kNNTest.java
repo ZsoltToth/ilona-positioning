@@ -4,8 +4,6 @@ import static org.junit.Assert.assertThat;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashSet;
 
 import org.easymock.EasyMock;
@@ -13,8 +11,6 @@ import org.hamcrest.BaseMatcher;
 import org.hamcrest.Description;
 import org.hamcrest.Matcher;
 import org.junit.Before;
-import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 
 import uni.miskolc.ips.ilona.measurement.model.measurement.BluetoothTags;
@@ -26,14 +22,13 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.RFIDTags;
 import uni.miskolc.ips.ilona.measurement.model.measurement.WiFiRSSI;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
-import uni.miskolc.ips.ilona.measurement.service.MeasurementService;
 import uni.miskolc.ips.ilona.measurement.service.exception.DatabaseUnavailableException;
-import uni.miskolc.ips.ilona.positioning.service.impl.knn.Neighbour;
+import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
 
 public class kNNTest {
 	private ArrayList<Measurement> measurementsList;
 	private Measurement incomingMeasurement;
-	private MeasurementService measurementService;
+	private MeasurementGateway measurementGateway;
 	private MeasurementDistanceCalculator distanceCalculator;
 	private int k;
 	private KNNSimplePositioning simplePositioning;
@@ -59,9 +54,9 @@ public class kNNTest {
 	
 	@Test
 	public void emptyMeasurementsListTest() throws DatabaseUnavailableException {
-		measurementService = EasyMock.createMock(MeasurementService.class);
-		EasyMock.expect(measurementService.readMeasurements()).andReturn(new ArrayList<Measurement>());
-		EasyMock.replay(measurementService);
+		measurementGateway = EasyMock.createMock(MeasurementGateway.class);
+		EasyMock.expect(measurementGateway.listMeasurements()).andReturn(new ArrayList<Measurement>());
+		EasyMock.replay(measurementGateway);
 
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(0), incomingMeasurement)).andReturn(1.6);
@@ -70,7 +65,7 @@ public class kNNTest {
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(3), incomingMeasurement)).andReturn(1.8);
 		EasyMock.replay(distanceCalculator);
 
-		simplePositioning = new KNNSimplePositioning(distanceCalculator, measurementService, k);
+		simplePositioning = new KNNSimplePositioning(distanceCalculator, measurementGateway, k);
 		Position actual = simplePositioning.determinePosition(incomingMeasurement);
 		Position expected = new Position(Zone.UNKNOWN_POSITION);
 		assertThat(actual, fromSameZone(expected));
@@ -79,7 +74,7 @@ public class kNNTest {
 
 	@Test
 	public void majorVote() throws DatabaseUnavailableException {
-		mockingMeasurementService();
+		mockingMeasurementGateway();
 
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(0), incomingMeasurement)).andReturn(1.6);
@@ -88,7 +83,7 @@ public class kNNTest {
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(3), incomingMeasurement)).andReturn(1.8);
 		EasyMock.replay(distanceCalculator);
 
-		simplePositioning = new KNNSimplePositioning(distanceCalculator, measurementService, k);
+		simplePositioning = new KNNSimplePositioning(distanceCalculator, measurementGateway, k);
 		Position actual = simplePositioning.determinePosition(incomingMeasurement);
 		Position expected = new Position(z2);
 		assertThat(actual, fromSameZone(expected));
@@ -97,7 +92,7 @@ public class kNNTest {
 
 	@Test(expected = IllegalArgumentException.class)
 	public void negativeKTest() throws DatabaseUnavailableException {
-		mockingMeasurementService();
+		mockingMeasurementGateway();
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(0), incomingMeasurement)).andReturn(1.6);
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(1), incomingMeasurement)).andReturn(1.6);
@@ -105,12 +100,12 @@ public class kNNTest {
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(3), incomingMeasurement)).andReturn(1.8);
 		EasyMock.replay(distanceCalculator);
 		k = -3;
-		simplePositioning = new KNNSimplePositioning(distanceCalculator, measurementService, k);
+		simplePositioning = new KNNSimplePositioning(distanceCalculator, measurementGateway, k);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void tooHighKTest() throws DatabaseUnavailableException {
-		mockingMeasurementService();
+		mockingMeasurementGateway();
 		distanceCalculator = EasyMock.createMock(MeasurementDistanceCalculator.class);
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(0), incomingMeasurement)).andReturn(1.6);
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(1), incomingMeasurement)).andReturn(1.6);
@@ -118,20 +113,20 @@ public class kNNTest {
 		EasyMock.expect(distanceCalculator.distance(measurementsList.get(3), incomingMeasurement)).andReturn(1.8);
 		EasyMock.replay(distanceCalculator);
 		k = 100;
-		simplePositioning = new KNNSimplePositioning(distanceCalculator, measurementService, k);
+		simplePositioning = new KNNSimplePositioning(distanceCalculator, measurementGateway, k);
 		simplePositioning.determinePosition(incomingMeasurement);
 	}
 
 	@Test(expected = IllegalArgumentException.class)
 	public void nullArgumentTest() throws DatabaseUnavailableException {
-		mockingMeasurementService();
-		simplePositioning = new KNNSimplePositioning(null, measurementService, k);
+		mockingMeasurementGateway();
+		simplePositioning = new KNNSimplePositioning(null, measurementGateway, k);
 	}
 
-	private void mockingMeasurementService() throws DatabaseUnavailableException {
-		measurementService = EasyMock.createMock(MeasurementService.class);
-		EasyMock.expect(measurementService.readMeasurements()).andReturn(measurementsList);
-		EasyMock.replay(measurementService);
+	private void mockingMeasurementGateway() throws DatabaseUnavailableException {
+		measurementGateway = EasyMock.createMock(MeasurementGateway.class);
+		EasyMock.expect(measurementGateway.listMeasurements()).andReturn(measurementsList);
+		EasyMock.replay(measurementGateway);
 
 	}
 
