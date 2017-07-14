@@ -1,10 +1,7 @@
 package uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork;
 
 import java.io.File;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.util.*;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -202,16 +199,10 @@ public class NeuralNetworkPositioningOverSensors implements PositioningService {
 	 */
 	private void evaluateNeuralNetwork(final NeuralNetwork neuralNetwork, final Instance instance) {
 		double cls;
+		Zone result;
 		try {
 			cls = neuralNetwork.getMultilayerPerceptron().classifyInstance(instance);
-			Collection<Zone> gatewayZones = zoneGateway.listZones();
-			Zone result = Zone.UNKNOWN_POSITION;
-			for(Zone z : gatewayZones){
-				if(z.getId().equals(UUID.fromString(instance.classAttribute().value((int) cls)))){
-					result = z;
-					break;
-				}
-			}
+			result = zoneGateway.getZoneById(UUID.fromString(instance.classAttribute().value((int) cls)));
 
 			if (zones.contains(result)) {
 				int index = zones.indexOf(result);

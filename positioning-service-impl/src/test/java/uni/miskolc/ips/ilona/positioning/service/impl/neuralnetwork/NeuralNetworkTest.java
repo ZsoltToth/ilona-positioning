@@ -1,11 +1,7 @@
 package uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork;
 
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,26 +27,25 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.WiFiRSSI;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneGateway;
-import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 import uni.miskolc.ips.ilona.positioning.model.MeasurementToInstanceConverter;
 import uni.miskolc.ips.ilona.positioning.model.neuralnetwork.NeuralNetwork;
 import weka.core.Instance;
 
 public class NeuralNetworkTest {
-	/*static Zone zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8, zone9, zone10, zone11, zone12, zone13, zone14,
+	static Zone zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8, zone9, zone10, zone11, zone12, zone13, zone14,
 			zone15, zone16, zone17, zone18, zone19, zone20, zone21;
 	ZoneGateway zoneGateway;
 	String bluetoothTrainingSetPath = "src/resources/bluetoothtrainingset.arff";
 	String magnetometerTrainingSetPath = "src/resources/magnetometertrainingset.arff";
 	String wifiTrainingSetPath = "src/resources/wifitrainingset.arff";
-	String trainingSetPath = "src/resources/trainingset.txt";
+	String trainingSetPath = "src/resources/trainingset.arff";
 
 	@Test
 	public void determinePositionTest() throws FileNotFoundException, IOException, Exception {
 		NeuralNetwork neuralnetwork = new NeuralNetwork(0.6, 0.7, 140, "13", trainingSetPath);
 		String serializedPath = "src/resources/neuralnetwork2.ser";
 		NeuralNetwork.serializeNeuralNetwork(neuralnetwork, serializedPath);
-		NeuralNetworkPositioning neuralNetworkPositioning = new NeuralNetworkPositioning(zoneService, serializedPath);
+		NeuralNetworkPositioning neuralNetworkPositioning = new NeuralNetworkPositioning(zoneGateway, serializedPath);
 		Measurement measurement = instanceFromJSON();
 		Position result = neuralNetworkPositioning.determinePosition(measurement);
 		Assert.assertNotNull(result);
@@ -70,11 +65,11 @@ public class NeuralNetworkTest {
 		NeuralNetwork neuralnetwork = new NeuralNetwork(0.6, 0.7, 140, "13", trainingSetPath);
 		String serializedPath = "src/resources/neuralnetwork.ser";
 		NeuralNetwork.serializeNeuralNetwork(neuralnetwork, serializedPath);
-		NeuralNetworkPositioning neuralNetworkPositioning = new NeuralNetworkPositioning(zoneService, serializedPath);
+		NeuralNetworkPositioning neuralNetworkPositioning = new NeuralNetworkPositioning(zoneGateway, serializedPath);
 		Measurement measurement = instanceFromJSON();
-		Instance instance = neuralnetwork.convertMeasurementToInstance(measurement);
+		Instance instance = MeasurementToInstanceConverter.convertMeasurementToInstance(measurement, neuralnetwork.getHeader());
 		double cls = neuralnetwork.getMultilayerPerceptron().classifyInstance(instance);
-		Zone zoneresult = zoneService.getZone(UUID.fromString(instance.classAttribute().value((int) cls)));
+		Zone zoneresult = zoneGateway.getZoneById(UUID.fromString(instance.classAttribute().value((int) cls)));
 		Position expected = new Position(zoneresult);
 		Position actual = neuralNetworkPositioning.determinePosition(measurement);
 		Assert.assertEquals(expected.getZone().getId(), actual.getZone().getId());
@@ -95,9 +90,9 @@ public class NeuralNetworkTest {
 
 		Measurement measurement = instanceFromJSON();
 		NeuralNetworkPositioningOverSensors positioningOverSensors = new NeuralNetworkPositioningOverSensors(
-				zoneService, 0.6, 0.3, 0.5, bluetoothserializedPath, magnetoserializedPath, wifiserializedPath);
+                zoneGateway, 0.6, 0.3, 0.5, bluetoothserializedPath, magnetoserializedPath, wifiserializedPath);
 		Position result = positioningOverSensors.determinePosition(measurement);
-		Assert.assertEquals(true, zoneService.getZones().contains(result.getZone()));
+		Assert.assertEquals(true, zoneGateway.listZones().contains(result.getZone()));
 
 	}
 
@@ -124,7 +119,7 @@ public class NeuralNetworkTest {
 				"/home/ilona/probaworkspace/neuralnetwork/trainingset.txt");
 		String serializedPath = "src/resources/neuralnetwork.ser";
 		NeuralNetwork.serializeNeuralNetwork(neuralnetwork, serializedPath);
-		NeuralNetworkPositioning neuralNetworkPositioning = new NeuralNetworkPositioning(zoneService, serializedPath);
+		NeuralNetworkPositioning neuralNetworkPositioning = new NeuralNetworkPositioning(zoneGateway, serializedPath);
 		Measurement measurement = instanceFromJSON();
 		Position result = neuralNetworkPositioning.determinePosition(measurement);
 		Assert.assertNotNull(result);
@@ -134,7 +129,7 @@ public class NeuralNetworkTest {
 	@Ignore
 	public void deserializeNeuralNetwork() throws JsonParseException, JsonMappingException, IOException {
 		String serializedPath = "src/resources/Wneuralnetwork.ser";
-		NeuralNetworkPositioning neuralNetworkPositioning = new NeuralNetworkPositioning(zoneService, serializedPath);
+		NeuralNetworkPositioning neuralNetworkPositioning = new NeuralNetworkPositioning(zoneGateway, serializedPath);
 		Measurement measurement = instanceFromJSON();
 	}
 
@@ -154,7 +149,7 @@ public class NeuralNetworkTest {
 	}
 
 	@Before
-	public void mockingZoneService() throws DatabaseUnavailableException, ZoneNotFoundException {
+	public void mockingZoneService() {
 		zone1 = new Zone("Lab101");
 		zone1.setId(UUID.fromString("5e27bae6-076f-4e5d-acb0-11a2cc2b9e0d"));
 		zone2 = new Zone("Lab102");
@@ -224,30 +219,30 @@ public class NeuralNetworkTest {
 			}
 		};
 
-		zoneService = EasyMock.createMock(ZoneService.class);
-		EasyMock.expect(zoneService.getZone(zone1.getId())).andReturn(zone1).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone2.getId())).andReturn(zone2).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone3.getId())).andReturn(zone3).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone4.getId())).andReturn(zone4).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone5.getId())).andReturn(zone5).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone6.getId())).andReturn(zone6).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone7.getId())).andReturn(zone7).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone8.getId())).andReturn(zone8).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone9.getId())).andReturn(zone9).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone10.getId())).andReturn(zone10).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone11.getId())).andReturn(zone11).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone12.getId())).andReturn(zone12).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone13.getId())).andReturn(zone13).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone14.getId())).andReturn(zone14).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone15.getId())).andReturn(zone15).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone16.getId())).andReturn(zone16).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone17.getId())).andReturn(zone17).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone18.getId())).andReturn(zone18).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone19.getId())).andReturn(zone19).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone20.getId())).andReturn(zone20).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone21.getId())).andReturn(zone21).anyTimes();
-		EasyMock.expect(zoneService.getZones()).andReturn(zones);
-		EasyMock.replay(zoneService);
+        zoneGateway = EasyMock.createMock(ZoneGateway.class);
+		EasyMock.expect(zoneGateway.getZoneById(zone1.getId())).andReturn(zone1).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone2.getId())).andReturn(zone2).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone3.getId())).andReturn(zone3).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone4.getId())).andReturn(zone4).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone5.getId())).andReturn(zone5).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone6.getId())).andReturn(zone6).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone7.getId())).andReturn(zone7).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone8.getId())).andReturn(zone8).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone9.getId())).andReturn(zone9).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone10.getId())).andReturn(zone10).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone11.getId())).andReturn(zone11).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone12.getId())).andReturn(zone12).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone13.getId())).andReturn(zone13).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone14.getId())).andReturn(zone14).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone15.getId())).andReturn(zone15).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone16.getId())).andReturn(zone16).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone17.getId())).andReturn(zone17).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone18.getId())).andReturn(zone18).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone19.getId())).andReturn(zone19).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone20.getId())).andReturn(zone20).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone21.getId())).andReturn(zone21).anyTimes();
+		EasyMock.expect(zoneGateway.listZones()).andReturn(zones);
+		EasyMock.replay(zoneGateway);
 	}
 
 	private Measurement createMeasurement() {

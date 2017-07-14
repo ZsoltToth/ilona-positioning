@@ -14,6 +14,7 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.MeasurementDistanceCa
 import uni.miskolc.ips.ilona.measurement.model.measurement.wifi.VectorIntersectionWiFiRSSIDistance;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
+import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
 
 import java.io.IOException;
@@ -52,7 +53,7 @@ public class KNNTestIT {
 
 
     @Test
-    public void test() throws IOException {
+    public void test() throws IOException, InvalidMeasurementException {
         System.out.println(
                 String.format("%s:%d/ilona/resources/listMeasurements",
                         System.getProperty(sysEnvMeasurementHost),

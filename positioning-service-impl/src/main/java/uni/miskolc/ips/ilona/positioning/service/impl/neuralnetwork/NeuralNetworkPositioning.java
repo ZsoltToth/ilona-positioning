@@ -65,14 +65,7 @@ public class NeuralNetworkPositioning implements PositioningService {
 		double cls;
 		try {
 			cls = mlp.classifyInstance(instance);
-			Collection<Zone> gatewayZones = zoneGateway.listZones();
-			for(Zone z : gatewayZones){
-				if(z.getId().equals(UUID.fromString(instance.classAttribute().value((int) cls)))){
-					result = new Position(z);
-					break;
-				}
-			}
-			result = new Position(Zone.UNKNOWN_POSITION);
+			result = new Position(zoneGateway.getZoneById(UUID.fromString(instance.classAttribute().value((int) cls))));
 		} catch (Exception e) {
 			result = new Position(Zone.UNKNOWN_POSITION);
 		}

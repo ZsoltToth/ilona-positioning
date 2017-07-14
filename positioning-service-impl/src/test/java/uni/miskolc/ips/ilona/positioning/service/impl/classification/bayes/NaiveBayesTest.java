@@ -7,6 +7,7 @@ import org.junit.Test;
 import uni.miskolc.ips.ilona.measurement.model.measurement.*;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
+import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 import uni.miskolc.ips.ilona.positioning.service.gateway.MeasurementGateway;
 
 import java.util.ArrayList;
@@ -42,7 +43,7 @@ public class NaiveBayesTest {
     }
 
     @Test
-    public void emptyMeasurementsListTest() {
+    public void emptyMeasurementsListTest() throws InvalidMeasurementException {
         measurementGateway = EasyMock.createMock(MeasurementGateway.class);
         EasyMock.expect(measurementGateway.listMeasurements()).andReturn(new ArrayList<Measurement>());
         EasyMock.replay(measurementGateway);
@@ -67,7 +68,7 @@ public class NaiveBayesTest {
 
 
     @Test
-    public void workingAsExpected() {
+    public void workingAsExpected() throws InvalidMeasurementException {
         mockingMeasurementGateway();
         bayesPositioning = new NaiveBayesPositioningService( measurementGateway, distanceCalculator,100);
         Position result =bayesPositioning.determinePosition(incomingMeasurement);

@@ -18,23 +18,21 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
-import uni.miskolc.ips.ilona.measurement.service.ZoneService;
-import uni.miskolc.ips.ilona.measurement.service.exception.DatabaseUnavailableException;
-import uni.miskolc.ips.ilona.measurement.service.exception.ZoneNotFoundException;
 import uni.miskolc.ips.ilona.positioning.model.svm.SupportVectorMachine;
+import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneGateway;
 
 public class SVMPositioningTest {
 
 	static Zone zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8, zone9, zone10, zone11, zone12, zone13, zone14,
 			zone15, zone16, zone17, zone18, zone19, zone20, zone21, zone22;
-	ZoneService zoneService;
+	ZoneGateway zoneGateway;
 
 	@Test
 	public void determinePositionOfJSONTest() throws FileNotFoundException, IOException, Exception {
 		SupportVectorMachine svm = new SupportVectorMachine("src/resources/training_set.arff");
 		String serializedPath = "src/resources/svm.ser";
 		SupportVectorMachine.serializeSupportVectorMachine(svm, serializedPath);
-		SVMPositioning svmPositioning = new SVMPositioning(serializedPath, zoneService);
+		SVMPositioning svmPositioning = new SVMPositioning(serializedPath, zoneGateway);
 		System.out.println(svm.getHeader());
 		Measurement measurement = instanceFromJSON();
 		Position result = svmPositioning.determinePosition(measurement);
@@ -67,7 +65,7 @@ public class SVMPositioningTest {
 	}
 
 	@Before
-	public void mockingZoneService() throws DatabaseUnavailableException, ZoneNotFoundException {
+	public void mockingZoneGateway()  {
 		zone1 = new Zone("Lab101");
 		zone1.setId(UUID.fromString("5e27bae6-076f-4e5d-acb0-11a2cc2b9e0d"));
 		zone2 = new Zone("Lab102");
@@ -145,31 +143,9 @@ public class SVMPositioningTest {
 			}
 		};
 
-		zoneService = EasyMock.createMock(ZoneService.class);
-		EasyMock.expect(zoneService.getZone(zone1.getId())).andReturn(zone1).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone2.getId())).andReturn(zone2).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone3.getId())).andReturn(zone3).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone4.getId())).andReturn(zone4).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone5.getId())).andReturn(zone5).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone6.getId())).andReturn(zone6).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone7.getId())).andReturn(zone7).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone8.getId())).andReturn(zone8).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone9.getId())).andReturn(zone9).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone10.getId())).andReturn(zone10).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone11.getId())).andReturn(zone11).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone12.getId())).andReturn(zone12).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone13.getId())).andReturn(zone13).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone14.getId())).andReturn(zone14).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone15.getId())).andReturn(zone15).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone16.getId())).andReturn(zone16).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone17.getId())).andReturn(zone17).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone18.getId())).andReturn(zone18).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone19.getId())).andReturn(zone19).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone20.getId())).andReturn(zone20).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone21.getId())).andReturn(zone21).anyTimes();
-		EasyMock.expect(zoneService.getZone(zone22.getId())).andReturn(zone22).anyTimes();
-		EasyMock.expect(zoneService.getZones()).andReturn(zones).anyTimes();
-		EasyMock.replay(zoneService);
+		zoneGateway = EasyMock.createMock(ZoneGateway.class);
+		EasyMock.expect(zoneGateway.listZones()).andReturn(zones).anyTimes();
+		EasyMock.replay(zoneGateway);
 	}
 
 }
