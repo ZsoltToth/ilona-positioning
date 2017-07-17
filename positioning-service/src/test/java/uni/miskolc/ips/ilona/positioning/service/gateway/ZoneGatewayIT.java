@@ -10,6 +10,7 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 
 import java.util.Collection;
+import java.util.UUID;
 
 /**
  * Created by tothzs on 2017.07.11..
@@ -43,7 +44,7 @@ public class ZoneGatewayIT {
     @Test
     public void test(){
         System.out.println(
-                String.format("%s:%d/ilona/listZones",
+                String.format("%s:%d/ilona-measurement/listZones",
                         System.getProperty(sysEnvMeasurementHost),
                         Integer.parseInt(System.getProperty(sysEnvMeasurementPort))));
         ZoneGateway gateway = context.getBean("ZoneGateway", ZoneGateway.class);
@@ -54,5 +55,7 @@ public class ZoneGatewayIT {
         for(Zone zone : result){
             System.out.println(String.format("%s : %s",zone.getId(), zone.getName()));
         }
+
+        System.out.println("Result for gateway getZoneById method: "+ gateway.getZoneById(UUID.fromString("14fc835a-ee28-4b78-9c59-9ee0f759ce56")));
     }
 }
