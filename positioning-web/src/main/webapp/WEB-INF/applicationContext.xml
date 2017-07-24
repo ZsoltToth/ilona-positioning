@@ -21,10 +21,10 @@
           class="uni.miskolc.ips.ilona.measurement.model.measurement.MeasurementDistanceCalculatorImpl">
         <constructor-arg ref="wifiDistanceCalculator"/>
         <constructor-arg name="wifiDistanceWeight" value="1.0"/>
-        <constructor-arg name="magnetometerDistanceWeight" value="1.0"/>
-        <constructor-arg name="gpsDistanceWeight" value="1.0"/>
+        <constructor-arg name="magnetometerDistanceWeight" value="0.5"/>
+        <constructor-arg name="gpsDistanceWeight" value="0.0"/>
         <constructor-arg name="bluetoothDistanceWeight" value="1.0"/>
-        <constructor-arg name="rfidDistanceWeight" value="1.0"/>
+        <constructor-arg name="rfidDistanceWeight" value="0.0"/>
     </bean>
     <bean id="positioningService" class="uni.miskolc.ips.ilona.positioning.service.impl.knn.KNNSimplePositioning">
         <constructor-arg name="distanceCalculator" ref="measurementDistanceCalculator"/>

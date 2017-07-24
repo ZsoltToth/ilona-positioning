@@ -2,6 +2,7 @@ package uni.miskolc.ips.ilona.positioning.service.impl.knn;
 
 import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
 import uni.miskolc.ips.ilona.measurement.model.measurement.MeasurementDistanceCalculator;
+import uni.miskolc.ips.ilona.measurement.model.position.Coordinate;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
@@ -112,8 +113,25 @@ public abstract class KNNPositioning implements PositioningService {
 		ArrayList<Neighbour> neighbours = getNeighbourList(measurements, measurement);
 		final ArrayList<Neighbour> kNearestNeighbours = getKNearestNeighbour(neighbours);
 		Position result = doGetMajorVote(kNearestNeighbours);
+		result.setCoordinate(getEstimatedCoordinate(kNearestNeighbours));
 		LOG.info(String.format("The position of measurement "+ measurement.toString()+" is position "+result.getZone()));
 		LOG.warn(this.getClass().getSimpleName()+","+measurement.getId()+","+measurement.getPosition().getZone().getName()+","+measurement.getPosition().getZone().getId()+","+result.getZone().getName()+","+result.getZone().getId());
+		return result;
+	}
+
+	private Coordinate getEstimatedCoordinate(ArrayList<Neighbour> kNearestNeighbours) {
+		Coordinate result;
+		double sumx=0;
+		double sumy=0;
+		double sumz=0;
+		double size = kNearestNeighbours.size();
+		for(Neighbour n : kNearestNeighbours){
+			sumx+=n.getMeasurement().getPosition().getCoordinate().getX();
+			sumy+=n.getMeasurement().getPosition().getCoordinate().getY();
+			sumz+=n.getMeasurement().getPosition().getCoordinate().getZ();
+		}
+		result= new Coordinate(sumx/size,sumy/size,sumz/size);
+		System.out.println("BELEPTEM");
 		return result;
 	}
 
