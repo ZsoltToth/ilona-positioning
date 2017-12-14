@@ -2,9 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>uni.miskolc.ips.ilona</groupId>
-	<artifactId>positioning</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
+	<groupId>uni.miskolc.ips.ilona.positioning</groupId>
+	<artifactId>bundle</artifactId>
+	<version>1.0.2-SNAPSHOT</version>
 	<packaging>pom</packaging>
 	<name>ILONA - Positioning Subsystem</name>
 
@@ -24,6 +24,7 @@
 		<measurement.host>localhost</measurement.host>
 		<measurement.port>8080</measurement.port>
 	</properties>
+
 
 	<build>
 		<pluginManagement>
@@ -56,14 +57,14 @@
 	</build>
 
 	<modules>
-		<module>positioning-util</module>
-		<module>positioning-model</module>
-		<module>positioning-service</module>
-		<module>positioning-service-impl</module>
-		<module>positioning-controller</module>
-		<module>positioning-persist</module>
-		<module>positioning-persist-mysql</module>
-		<module>positioning-web</module>
+		<module>model</module>
+		<module>util</module>
+		<module>service</module>
+		<module>service.impl</module>
+		<module>persist</module>
+		<module>persist.mysql</module>
+		<module>controller</module>
+		<module>web</module>
 	</modules>
 	
 	<repositories>
