@@ -27,9 +27,9 @@
     </dependency>
 
     <dependency>
-      <groupId>uni.miskolc.ips.ilona</groupId>
-      <artifactId>measurement-model</artifactId>
-      <version>1.0.1-SNAPSHOT</version>
+      <groupId>uni.miskolc.ips.ilona.measurement</groupId>
+      <artifactId>model</artifactId>
+      <version>1.0.3-SNAPSHOT</version>
     </dependency>
 
     <dependency>
