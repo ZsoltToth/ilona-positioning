@@ -90,22 +90,22 @@ public class ZoneQueryServiceSIConfig {
         return new CharacterStreamWritingMessageHandler(new BufferedWriter(new OutputStreamWriter(System.err)));
     }
 
+    @Bean
+    @ServiceActivator(inputChannel = "getZoneQueryChannel")
+    public HttpRequestExecutingMessageHandler httpGateway(
+       //     @Header(value = "zoneID") String zoneID
+) {
+     //   System.out.println(("http://"+System.getProperty("measurement.host")+":"+System.getProperty("measurement.port")+"/zones/"+zoneID));
 
-//    @ServiceActivator(inputChannel = "getZoneQueryChannel")
-//    public HttpRequestExecutingMessageHandler httpGateway(
-//            @Header(value = "zoneID") String zoneID
-//) {
-//     //   System.out.println(("http://"+System.getProperty("measurement.host")+":"+System.getProperty("measurement.port")+"/zones/"+zoneID));
-//
-//     //   HttpRequestExecutingMessageHandler gateway = new HttpRequestExecutingMessageHandler("http://"+System.getProperty("measurement.host")+":"+System.getProperty("measurement.port")+"/zones/"+zoneID);
-//        HttpRequestExecutingMessageHandler gateway = new HttpRequestExecutingMessageHandler("http://localhost:8081/zones/183f0204-5029-4b33-a128-404ba5c68fa8");
-//
-//        gateway.setHttpMethod(HttpMethod.GET);
-//
-//        gateway.setExpectedResponseType(ZoneDTO.class);
-//        gateway.setOutputChannel(getZoneReplyChannel());
-//        return gateway;
-//    }
+     //   HttpRequestExecutingMessageHandler gateway = new HttpRequestExecutingMessageHandler("http://"+System.getProperty("measurement.host")+":"+System.getProperty("measurement.port")+"/zones/"+zoneID);
+        HttpRequestExecutingMessageHandler gateway = new HttpRequestExecutingMessageHandler("http://localhost:8081/zones/183f0204-5029-4b33-a128-404ba5c68fa8");
+
+        gateway.setHttpMethod(HttpMethod.GET);
+
+        gateway.setExpectedResponseType(ZoneDTO.class);
+        gateway.setOutputChannel(getZoneReplyChannel());
+        return gateway;
+    }
 
 
 
