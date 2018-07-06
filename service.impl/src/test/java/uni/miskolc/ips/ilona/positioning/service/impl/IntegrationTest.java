@@ -21,6 +21,10 @@ public class IntegrationTest {
 
 
         String zoneDTO=zoneQueryService.getZoneById("183f0204-5029-4b33-a128-404ba5c68fa8").getName();
+        System.out.println(zoneDTO);
+        zoneDTO=zoneQueryService.getZoneById("183f0204-5029-4b33-a128-404ba5c68fa").getName();
+        System.out.println(zoneDTO);
+        zoneDTO=zoneQueryService.getZoneById("743d2365-2eaa-412f-8324-6b6b1361ba5b").getName();
 
 
         System.out.println(zoneDTO);
