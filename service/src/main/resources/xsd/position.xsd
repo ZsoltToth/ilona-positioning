@@ -1,0 +1,28 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://uni.miskolc.ips.ilona.measurement/position"
+           elementFormDefault="qualified"
+            xmlns:pos="http://uni.miskolc.ips.ilona.measurement/position">
+
+    <xs:complexType name="ZoneDTO">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="name" type="xs:string"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="CoordinateDTO">
+        <xs:sequence>
+            <xs:element name="x" type="xs:double"/>
+            <xs:element name="y" type="xs:double"/>
+            <xs:element name="z" type="xs:double"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="PositionDTO">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="zone" type="pos:ZoneDTO"/>
+            <xs:element name="coordinate" type="pos:CoordinateDTO"/>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
