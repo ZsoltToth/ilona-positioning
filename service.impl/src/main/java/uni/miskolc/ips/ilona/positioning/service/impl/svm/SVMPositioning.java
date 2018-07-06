@@ -12,7 +12,7 @@ import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.positioning.model.MeasurementToInstanceConverter;
 import uni.miskolc.ips.ilona.positioning.model.svm.SupportVectorMachine;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
-import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneGateway;
+import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneQueryService;
 import weka.classifiers.functions.LibSVM;
 import weka.core.Instance;
 
@@ -20,11 +20,11 @@ public class SVMPositioning implements PositioningService {
 
 	private SupportVectorMachine svm;
 	
-	private ZoneGateway zoneGateway;
+	private ZoneQueryService zoneGateway;
 	
 	private static final Logger LOG = LogManager.getLogger(SVMPositioning.class);
 
-	public SVMPositioning(String serializedFilePath, ZoneGateway zoneGateway) {
+	public SVMPositioning(String serializedFilePath, ZoneQueryService zoneGateway) {
 		super();
 		this.svm = SupportVectorMachine.deserialization(serializedFilePath);
 		this.zoneGateway = zoneGateway;

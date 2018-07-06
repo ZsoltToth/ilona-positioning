@@ -2,11 +2,7 @@ package uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.UUID;
+import java.util.*;
 
 import org.easymock.EasyMock;
 import org.junit.Assert;
@@ -18,6 +14,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import uni.miskolc.ips.ilona.measurement.controller.dto.ZoneDTO;
 import uni.miskolc.ips.ilona.measurement.model.measurement.BluetoothTags;
 import uni.miskolc.ips.ilona.measurement.model.measurement.Magnetometer;
 import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
@@ -26,7 +23,7 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.RFIDTags;
 import uni.miskolc.ips.ilona.measurement.model.measurement.WiFiRSSI;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
-import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneGateway;
+import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneQueryService;
 import uni.miskolc.ips.ilona.positioning.model.MeasurementToInstanceConverter;
 import uni.miskolc.ips.ilona.positioning.model.neuralnetwork.NeuralNetwork;
 import weka.core.Instance;
@@ -34,7 +31,7 @@ import weka.core.Instance;
 public class NeuralNetworkTest {
 	static Zone zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8, zone9, zone10, zone11, zone12, zone13, zone14,
 			zone15, zone16, zone17, zone18, zone19, zone20, zone21;
-	ZoneGateway zoneGateway;
+	ZoneQueryService zoneGateway;
 	String bluetoothTrainingSetPath = "src/resources/bluetoothtrainingset.arff";
 	String magnetometerTrainingSetPath = "src/resources/magnetometertrainingset.arff";
 	String wifiTrainingSetPath = "src/resources/wifitrainingset.arff";
@@ -69,8 +66,10 @@ public class NeuralNetworkTest {
 		Measurement measurement = instanceFromJSON();
 		Instance instance = MeasurementToInstanceConverter.convertMeasurementToInstance(measurement, neuralnetwork.getHeader());
 		double cls = neuralnetwork.getMultilayerPerceptron().classifyInstance(instance);
-		Zone zoneresult = zoneGateway.getZoneById(UUID.fromString(instance.classAttribute().value((int) cls)));
-		Position expected = new Position(zoneresult);
+		ZoneDTO zoneresult = zoneGateway.getZoneById(instance.classAttribute().value((int) cls));
+		Zone zone= new Zone(zoneresult.getName());
+		zone.setId(UUID.fromString(zoneresult.getId()));
+		Position expected = new Position(zone);
 		Position actual = neuralNetworkPositioning.determinePosition(measurement);
 		Assert.assertEquals(expected.getZone().getId(), actual.getZone().getId());
 	}
@@ -193,6 +192,7 @@ public class NeuralNetworkTest {
 		zone21 = new Zone("Lecture Hall XXVI");
 		zone21.setId(UUID.fromString("fff52967-5b13-4935-afa0-44c375cb84db"));
 
+
 		Collection<Zone> zones = new ArrayList<Zone>() {
 			{
 				add(zone1);
@@ -218,29 +218,36 @@ public class NeuralNetworkTest {
 				add(zone21);
 			}
 		};
+		List<ZoneDTO> zoneDTOS = new ArrayList<>();
+		for (int i = 0; i < zones.size(); i++) {
+			ZoneDTO zoneDTO = new ZoneDTO();
+			zoneDTO.setId(((ArrayList<Zone>) zones).get(i).getId().toString());
+			zoneDTO.setName(((ArrayList<Zone>) zones).get(i).getName());
+			zoneDTOS.add(zoneDTO);
+		}
 
-        zoneGateway = EasyMock.createMock(ZoneGateway.class);
-		EasyMock.expect(zoneGateway.getZoneById(zone1.getId())).andReturn(zone1).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone2.getId())).andReturn(zone2).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone3.getId())).andReturn(zone3).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone4.getId())).andReturn(zone4).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone5.getId())).andReturn(zone5).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone6.getId())).andReturn(zone6).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone7.getId())).andReturn(zone7).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone8.getId())).andReturn(zone8).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone9.getId())).andReturn(zone9).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone10.getId())).andReturn(zone10).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone11.getId())).andReturn(zone11).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone12.getId())).andReturn(zone12).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone13.getId())).andReturn(zone13).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone14.getId())).andReturn(zone14).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone15.getId())).andReturn(zone15).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone16.getId())).andReturn(zone16).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone17.getId())).andReturn(zone17).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone18.getId())).andReturn(zone18).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone19.getId())).andReturn(zone19).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone20.getId())).andReturn(zone20).anyTimes();
-		EasyMock.expect(zoneGateway.getZoneById(zone21.getId())).andReturn(zone21).anyTimes();
+        zoneGateway = EasyMock.createMock(ZoneQueryService.class);
+		EasyMock.expect(zoneGateway.getZoneById(zone1.getId().toString())).andReturn(zoneDTOS.get(0)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone2.getId().toString())).andReturn(zoneDTOS.get(1)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone3.getId().toString())).andReturn(zoneDTOS.get(2)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone4.getId().toString())).andReturn(zoneDTOS.get(3)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone5.getId().toString())).andReturn(zoneDTOS.get(4)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone6.getId().toString())).andReturn(zoneDTOS.get(5)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone7.getId().toString())).andReturn(zoneDTOS.get(6)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone8.getId().toString())).andReturn(zoneDTOS.get(7)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone9.getId().toString())).andReturn(zoneDTOS.get(8)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone10.getId().toString())).andReturn(zoneDTOS.get(9)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone11.getId().toString())).andReturn(zoneDTOS.get(10)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone12.getId().toString())).andReturn(zoneDTOS.get(11)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone13.getId().toString())).andReturn(zoneDTOS.get(12)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone14.getId().toString())).andReturn(zoneDTOS.get(13)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone15.getId().toString())).andReturn(zoneDTOS.get(14)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone16.getId().toString())).andReturn(zoneDTOS.get(15)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone17.getId().toString())).andReturn(zoneDTOS.get(16)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone18.getId().toString())).andReturn(zoneDTOS.get(17)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone19.getId().toString())).andReturn(zoneDTOS.get(18)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone20.getId().toString())).andReturn(zoneDTOS.get(19)).anyTimes();
+		EasyMock.expect(zoneGateway.getZoneById(zone21.getId().toString())).andReturn(zoneDTOS.get(20)).anyTimes();
 		EasyMock.expect(zoneGateway.listZones()).andReturn(zones);
 		EasyMock.replay(zoneGateway);
 	}
