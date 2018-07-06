@@ -1,0 +1,125 @@
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema"
+           targetNamespace="http://uni.miskolc.ips.ilona.measurement/measurement"
+           elementFormDefault="qualified"
+           xmlns:pos="http://uni.miskolc.ips.ilona.measurement/position">
+
+    <xs:import namespace="http://uni.miskolc.ips.ilona.measurement/position" schemaLocation="position.xsd"/>
+
+
+    <xs:complexType name="MeasurementDTO">
+        <xs:sequence>
+            <xs:element name="id" type="xs:string"/>
+            <xs:element name="timestamp" type="xs:dateTime"/>
+            <xs:element name="position" type="pos:PositionDTO"/>
+            <xs:element name="wifiRSSI" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ap" minOccurs="1" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:double">
+                                        <xs:attribute name="ssid" type="xs:string" use="required"/>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="magnetometer" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="xAxis" type="xs:double"/>
+                        <xs:element name="yAxis" type="xs:double"/>
+                        <xs:element name="zAxis" type="xs:double"/>
+                        <xs:element name="radian" type="xs:double"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="bluetoothTags" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="bluetoothTag" type="xs:string" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="gpsCoordinates" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="latitude" type="xs:double"/>
+                        <xs:element name="longitude" type="xs:double"/>
+                        <xs:element name="altitude" type="xs:double"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="rfidtags" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="rfidTag" type="xs:base64Binary" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="MeasurementRegistrationRequest">
+        <xs:sequence>
+            <xs:element name="position">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="zone" type="pos:ZoneDTO"/>
+                        <xs:element name="coordinate" type="pos:CoordinateDTO"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="wifiRSSI" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="ap" minOccurs="1" maxOccurs="unbounded">
+                            <xs:complexType>
+                                <xs:simpleContent>
+                                    <xs:extension base="xs:double">
+                                        <xs:attribute name="ssid" type="xs:string" use="required"/>
+                                    </xs:extension>
+                                </xs:simpleContent>
+                            </xs:complexType>
+                        </xs:element>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="magnetometer" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="xAxis" type="xs:double"/>
+                        <xs:element name="yAxis" type="xs:double"/>
+                        <xs:element name="zAxis" type="xs:double"/>
+                        <xs:element name="radian" type="xs:double"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="bluetoothTags" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="bluetoothTag" type="xs:string" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="gpsCoordinates" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="latitude" type="xs:double"/>
+                        <xs:element name="longitude" type="xs:double"/>
+                        <xs:element name="altitude" type="xs:double"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+            <xs:element name="rfidtags" minOccurs="0" maxOccurs="1">
+                <xs:complexType>
+                    <xs:sequence>
+                        <xs:element name="rfidTag" type="xs:base64Binary" maxOccurs="unbounded"/>
+                    </xs:sequence>
+                </xs:complexType>
+            </xs:element>
+        </xs:sequence>
+    </xs:complexType>
+</xs:schema>
