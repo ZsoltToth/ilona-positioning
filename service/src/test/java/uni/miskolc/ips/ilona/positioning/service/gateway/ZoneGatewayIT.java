@@ -7,6 +7,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import uni.miskolc.ips.ilona.measurement.controller.dto.ZoneDTO;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 
 import java.util.Collection;
@@ -48,11 +49,11 @@ public class ZoneGatewayIT {
                         System.getProperty(sysEnvMeasurementHost),
                         Integer.parseInt(System.getProperty(sysEnvMeasurementPort))));
         ZoneQueryService gateway = context.getBean("ZoneGateway", ZoneQueryService.class);
-        Collection<Zone> result = gateway.listZones();
+        Collection<ZoneDTO> result = gateway.listZones();
         System.out.println("---> "+result);
         System.out.println("--->"+result.size());
         System.out.println(result.getClass());
-        for(Zone zone : result){
+        for(ZoneDTO zone : result){
             System.out.println(String.format("%s : %s",zone.getId(), zone.getName()));
         }
 

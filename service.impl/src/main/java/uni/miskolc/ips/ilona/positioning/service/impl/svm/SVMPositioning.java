@@ -6,6 +6,8 @@ import java.util.UUID;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import uni.miskolc.ips.ilona.measurement.controller.dto.PositionDTO;
+import uni.miskolc.ips.ilona.measurement.controller.dto.ZoneDTO;
 import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
@@ -39,10 +41,12 @@ public class SVMPositioning implements PositioningService {
 		double cls;
 		try {
 			cls = libsvm.classifyInstance(instance);
-			Collection<Zone> gatewayresult = zoneGateway.listZones();
-			for(Zone z : gatewayresult){
+			Collection<ZoneDTO> gatewayresult = zoneGateway.listZones();
+			for(ZoneDTO z : gatewayresult){
 				if(z.getId().equals(UUID.fromString(instance.classAttribute().value((int) cls)))){
-					result = new Position(z);
+					Zone zone = new Zone(z.getName());
+					zone.setId(UUID.fromString(z.getId()));
+					result = new Position(zone);
 					break;
 				}
 			}

@@ -29,7 +29,7 @@ import uni.miskolc.ips.ilona.positioning.model.neuralnetwork.NeuralNetwork;
 import weka.core.Instance;
 
 public class NeuralNetworkTest {
-	static Zone zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8, zone9, zone10, zone11, zone12, zone13, zone14,
+	static ZoneDTO zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8, zone9, zone10, zone11, zone12, zone13, zone14,
 			zone15, zone16, zone17, zone18, zone19, zone20, zone21;
 	ZoneQueryService zoneGateway;
 	String bluetoothTrainingSetPath = "src/resources/bluetoothtrainingset.arff";
@@ -149,51 +149,72 @@ public class NeuralNetworkTest {
 
 	@Before
 	public void mockingZoneService() {
-		zone1 = new Zone("Lab101");
-		zone1.setId(UUID.fromString("5e27bae6-076f-4e5d-acb0-11a2cc2b9e0d"));
-		zone2 = new Zone("Lab102");
-		zone2.setId(UUID.fromString("93f32509-0f74-4f2c-a45a-90858ca646d8"));
-		zone3 = new Zone("Lab103");
-		zone3.setId(UUID.fromString("8933b3c7-54ac-4fc3-a2e5-8c7fdc7bfae3"));
-		zone4 = new Zone("1st Floor East Corridor");
-		zone4.setId(UUID.fromString("07a25de0-a013-486d-9463-404a348e05ee"));
-		zone5 = new Zone("2nd Floor East Corridor");
-		zone5.setId(UUID.fromString("14fc835a-ee28-4b78-9c59-9ee0f759ce56"));
-		zone6 = new Zone("Ground Floor East Corridor");
-		zone6.setId(UUID.fromString("1501dc2f-55e3-44bd-8f15-8c26a8c7410d"));
-		zone7 = new Zone("Lab 104");
-		zone7.setId(UUID.fromString("43f5e995-b6f9-4e6f-b40a-9f6bca793ecd"));
-		zone8 = new Zone("1st Floor West Corridor");
-		zone8.setId(UUID.fromString("544bbbff-2c9c-4d7f-aad5-1742e2f26935"));
-		zone9 = new Zone("Lab 115");
-		zone9.setId(UUID.fromString("59376e57-9d03-4b9d-af9b-36d6f617a935"));
-		zone10 = new Zone("1st Floor North Corridor");
-		zone10.setId(UUID.fromString("5eed44d0-c401-46a0-935c-b3161177a00f"));
-		zone11 = new Zone("2nd Floor North Corridor");
-		zone11.setId(UUID.fromString("79d7a2dc-831e-4d07-98d7-327dbbad3884"));
-		zone12 = new Zone("Ground Floor North Corridor");
-		zone12.setId(UUID.fromString("7b8681b3-9d64-4b7e-918d-074bd146d9e6"));
-		zone13 = new Zone("Ground Floor Lobby");
-		zone13.setId(UUID.fromString("8e4181f2-8e1c-467d-8cc2-4580bf5cb76c"));
-		zone14 = new Zone("Lab 106");
-		zone14.setId(UUID.fromString("a377b162-49fb-4140-bfe1-2565a2260764"));
-		zone15 = new Zone("Lecture Hall 205");
-		zone15.setId(UUID.fromString("aa7b48e2-ab67-4888-b5c9-1edc21c13d63"));
-		zone16 = new Zone("2nd Floor Lobby");
-		zone16.setId(UUID.fromString("b33055ec-4fda-4cf1-ae44-b3fd54f94467"));
-		zone17 = new Zone("Office 107b");
-		zone17.setId(UUID.fromString("bef00f27-9e13-4416-a380-c04010c377cb"));
-		zone18 = new Zone("Ground Floor West Corridor");
-		zone18.setId(UUID.fromString("e2d1a25f-5496-49c6-85b7-ccb3601a9971"));
-		zone19 = new Zone("1st Floor Lobby");
-		zone19.setId(UUID.fromString("e48c8f34-716c-477f-a448-9c209d635fbf"));
-		zone20 = new Zone("2nd Floor West Corridor");
-		zone20.setId(UUID.fromString("f44d88f6-8067-4934-ac94-c38bfdc8bb7f"));
-		zone21 = new Zone("Lecture Hall XXVI");
-		zone21.setId(UUID.fromString("fff52967-5b13-4935-afa0-44c375cb84db"));
+		zone1 = new ZoneDTO();
+		zone1.setName("Lab101");
+		zone1.setId("5e27bae6-076f-4e5d-acb0-11a2cc2b9e0d");
+		zone2 = new ZoneDTO();
+		zone2.setName("Lab102");
+		zone2.setId("93f32509-0f74-4f2c-a45a-90858ca646d8");
+		zone3 = new ZoneDTO();
+		zone3.setName("Lab103");
+		zone3.setId("8933b3c7-54ac-4fc3-a2e5-8c7fdc7bfae3");
+		zone4 = new ZoneDTO();
+		zone4.setName("1st Floor East Corridor");
+		zone4.setId("07a25de0-a013-486d-9463-404a348e05ee");
+		zone5 = new ZoneDTO();
+		zone5.setName("2nd Floor East Corridor");
+		zone5.setId("14fc835a-ee28-4b78-9c59-9ee0f759ce56");
+		zone6 = new ZoneDTO();
+		zone6.setName("Ground Floor East Corridor");
+		zone6.setId("1501dc2f-55e3-44bd-8f15-8c26a8c7410d");
+		zone7 = new ZoneDTO();
+		zone7.setName("Lab 104");
+		zone7.setId("43f5e995-b6f9-4e6f-b40a-9f6bca793ecd");
+		zone8 = new ZoneDTO();
+		zone8.setName("1st Floor West Corridor");
+		zone8.setId("544bbbff-2c9c-4d7f-aad5-1742e2f26935");
+		zone9 = new ZoneDTO();
+		zone9.setName("Lab 115");
+		zone9.setId("59376e57-9d03-4b9d-af9b-36d6f617a935");
+		zone10 = new ZoneDTO();
+		zone10.setName("1st Floor North Corridor");
+		zone10.setId("5eed44d0-c401-46a0-935c-b3161177a00f");
+		zone11 = new ZoneDTO();
+		zone11.setName("2nd Floor North Corridor");
+		zone11.setId("79d7a2dc-831e-4d07-98d7-327dbbad3884");
+		zone12 = new ZoneDTO();
+		zone12.setName("Ground Floor North Corridor");
+		zone12.setId("7b8681b3-9d64-4b7e-918d-074bd146d9e6");
+		zone13 = new ZoneDTO();
+		zone13.setName("Ground Floor Lobby");
+		zone13.setId("8e4181f2-8e1c-467d-8cc2-4580bf5cb76c");
+		zone14 = new ZoneDTO();
+		zone14.setName("Lab 106");
+		zone14.setId("a377b162-49fb-4140-bfe1-2565a2260764");
+		zone15 = new ZoneDTO();
+		zone15.setName("Lecture Hall 205");
+		zone15.setId("aa7b48e2-ab67-4888-b5c9-1edc21c13d63");
+		zone16 = new ZoneDTO();
+		zone16.setName("2nd Floor Lobby");
+		zone16.setId("b33055ec-4fda-4cf1-ae44-b3fd54f94467");
+		zone17 = new ZoneDTO();
+		zone17.setName("Office 107b");
+		zone17.setId("bef00f27-9e13-4416-a380-c04010c377cb");
+		zone18 = new ZoneDTO();
+		zone18.setName("Ground Floor West Corridor");
+		zone18.setId("e2d1a25f-5496-49c6-85b7-ccb3601a9971");
+		zone19 = new ZoneDTO();
+		zone19.setName("1st Floor Lobby");
+		zone19.setId("e48c8f34-716c-477f-a448-9c209d635fbf");
+		zone20 = new ZoneDTO();
+		zone20.setName("2nd Floor West Corridor");
+		zone20.setId("f44d88f6-8067-4934-ac94-c38bfdc8bb7f");
+		zone21 = new ZoneDTO();
+		zone21.setName("Lecture Hall XXVI");
+		zone21.setId("fff52967-5b13-4935-afa0-44c375cb84db");
 
 
-		Collection<Zone> zones = new ArrayList<Zone>() {
+		Collection<ZoneDTO> zones = new ArrayList<ZoneDTO>() {
 			{
 				add(zone1);
 				add(zone2);
@@ -219,10 +240,10 @@ public class NeuralNetworkTest {
 			}
 		};
 		List<ZoneDTO> zoneDTOS = new ArrayList<>();
-		for (int i = 0; i < zones.size(); i++) {
+		for (int i = 0; i < zoneDTOS.size(); i++) {
 			ZoneDTO zoneDTO = new ZoneDTO();
-			zoneDTO.setId(((ArrayList<Zone>) zones).get(i).getId().toString());
-			zoneDTO.setName(((ArrayList<Zone>) zones).get(i).getName());
+			zoneDTO.setId(((ArrayList<ZoneDTO>) zones).get(i).getId().toString());
+			zoneDTO.setName(((ArrayList<ZoneDTO>) zones).get(i).getName());
 			zoneDTOS.add(zoneDTO);
 		}
 
