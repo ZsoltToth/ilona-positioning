@@ -3,7 +3,6 @@ package uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.easymock.EasyMock;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.BeforeClass;
@@ -15,13 +14,10 @@ import uni.miskolc.ips.ilona.measurement.model.position.Position;
 
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.positioning.model.neuralnetwork.NeuralNetwork;
-import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneGateway;
+import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneQueryService;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.UUID;
 
 import static org.junit.Assume.assumeNoException;
 import static org.junit.Assume.assumeNotNull;
@@ -36,7 +32,7 @@ public class NeuralNetworkIT {
     private static final String siConfigLocation = "/si-config-measurement.xml";
 
     private ApplicationContext context;
-    private ZoneGateway zoneGateway;
+    private ZoneQueryService zoneGateway;
     String trainingSetPath = "src/resources/training_set.arff";
 
     @BeforeClass
@@ -53,7 +49,7 @@ public class NeuralNetworkIT {
     @Before
     public void setUp(){
         this.context = new ClassPathXmlApplicationContext(siConfigLocation);
-        zoneGateway=context.getBean("ZoneGateway", ZoneGateway.class);
+        zoneGateway=context.getBean("ZoneGateway", ZoneQueryService.class);
     }
 
 

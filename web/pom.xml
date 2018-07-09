@@ -6,7 +6,7 @@
     <parent>
         <groupId>uni.miskolc.ips.ilona.positioning</groupId>
         <artifactId>bundle</artifactId>
-        <version>2.0.7-SNAPSHOT</version>
+        <version>2.0.8-SNAPSHOT</version>
     </parent>
     <artifactId>web</artifactId>
     <packaging>war</packaging>
@@ -40,12 +40,12 @@
         <dependency>
             <groupId>uni.miskolc.ips.ilona.positioning</groupId>
             <artifactId>controller</artifactId>
-            <version>2.0.7-SNAPSHOT</version>
+            <version>2.0.8-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>uni.miskolc.ips.ilona.positioning</groupId>
             <artifactId>service.impl</artifactId>
-            <version>2.0.7-SNAPSHOT</version>
+            <version>2.0.8-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>uni.miskolc.ips.ilona.measurement</groupId>

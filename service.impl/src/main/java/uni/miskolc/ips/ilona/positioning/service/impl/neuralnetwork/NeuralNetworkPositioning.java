@@ -1,11 +1,11 @@
 package uni.miskolc.ips.ilona.positioning.service.impl.neuralnetwork;
 
-import java.util.Collection;
 import java.util.UUID;
 
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import uni.miskolc.ips.ilona.measurement.controller.dto.ZoneDTO;
 import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
@@ -13,7 +13,7 @@ import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 import uni.miskolc.ips.ilona.positioning.model.MeasurementToInstanceConverter;
 import uni.miskolc.ips.ilona.positioning.model.neuralnetwork.NeuralNetwork;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
-import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneGateway;
+import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneQueryService;
 import weka.classifiers.functions.MultilayerPerceptron;
 import weka.core.Instance;
 
@@ -31,7 +31,7 @@ public class NeuralNetworkPositioning implements PositioningService {
 	/**
 	 * A gateway to get the Zones.
 	 */
-	private ZoneGateway zoneGateway;
+	private ZoneQueryService zoneGateway;
 	/**
 	 * A log istance for the class.
 	 */
@@ -42,7 +42,7 @@ public class NeuralNetworkPositioning implements PositioningService {
 	 * @param zoneGateway A service to get the Zone instances from the database.
 	 * @param serializedNeuralNetwork The path of serialized NeuralNetwork
 	 */
-	public NeuralNetworkPositioning(final ZoneGateway zoneGateway, final String serializedNeuralNetwork) {
+	public NeuralNetworkPositioning(final ZoneQueryService zoneGateway, final String serializedNeuralNetwork) {
 		super();
 		this.neuralNetwork = NeuralNetwork.deserialization(serializedNeuralNetwork);
 		this.zoneGateway = zoneGateway;
@@ -65,7 +65,13 @@ public class NeuralNetworkPositioning implements PositioningService {
 		double cls;
 		try {
 			cls = mlp.classifyInstance(instance);
-			result = new Position(zoneGateway.getZoneById(UUID.fromString(instance.classAttribute().value((int) cls))));
+
+			ZoneDTO zoneDTO =zoneGateway.getZoneById(instance.classAttribute().value((int) cls));
+			Zone zone= new Zone(zoneDTO.getName());
+			zone.setId( UUID.fromString(zoneDTO.getId()));
+
+
+			result = new Position(zone);
 		} catch (Exception e) {
 			result = new Position(Zone.UNKNOWN_POSITION);
 		}

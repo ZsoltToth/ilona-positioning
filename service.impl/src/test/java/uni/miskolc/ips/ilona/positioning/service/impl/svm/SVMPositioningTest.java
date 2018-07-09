@@ -19,13 +19,13 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.positioning.model.svm.SupportVectorMachine;
-import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneGateway;
+import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneQueryService;
 
 public class SVMPositioningTest {
 
 	static Zone zone1, zone2, zone3, zone4, zone5, zone6, zone7, zone8, zone9, zone10, zone11, zone12, zone13, zone14,
 			zone15, zone16, zone17, zone18, zone19, zone20, zone21, zone22;
-	ZoneGateway zoneGateway;
+	ZoneQueryService zoneGateway;
 
 	@Test
 	public void determinePositionOfJSONTest() throws FileNotFoundException, IOException, Exception {
@@ -143,7 +143,7 @@ public class SVMPositioningTest {
 			}
 		};
 
-		zoneGateway = EasyMock.createMock(ZoneGateway.class);
+		zoneGateway = EasyMock.createMock(ZoneQueryService.class);
 		EasyMock.expect(zoneGateway.listZones()).andReturn(zones).anyTimes();
 		EasyMock.replay(zoneGateway);
 	}

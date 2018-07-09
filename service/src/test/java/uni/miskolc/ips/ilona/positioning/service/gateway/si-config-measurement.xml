@@ -30,7 +30,7 @@
     </bean>
 
     <int:gateway
-            service-interface="uni.miskolc.ips.ilona.positioning.service.gateway.ZoneGateway"
+            service-interface="uni.miskolc.ips.ilona.positioning.service.gateway.ZoneQueryService"
             id="ZoneGateway" default-request-channel="ZoneReqChannel"/>
 
     <int:gateway

@@ -4,7 +4,6 @@ import static org.junit.Assume.*;
 
 import org.junit.Before;
 import org.junit.BeforeClass;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -48,7 +47,7 @@ public class ZoneGatewayIT {
                 String.format("%s:%d/ilona-measurement/listZones",
                         System.getProperty(sysEnvMeasurementHost),
                         Integer.parseInt(System.getProperty(sysEnvMeasurementPort))));
-        ZoneGateway gateway = context.getBean("ZoneGateway", ZoneGateway.class);
+        ZoneQueryService gateway = context.getBean("ZoneGateway", ZoneQueryService.class);
         Collection<Zone> result = gateway.listZones();
         System.out.println("---> "+result);
         System.out.println("--->"+result.size());
@@ -57,6 +56,6 @@ public class ZoneGatewayIT {
             System.out.println(String.format("%s : %s",zone.getId(), zone.getName()));
         }
 
-        System.out.println("Result for gateway getZoneById method: "+ gateway.getZoneById(UUID.fromString("14fc835a-ee28-4b78-9c59-9ee0f759ce56")));
+        System.out.println("Result for gateway getZoneById method: "+ gateway.getZoneById(("14fc835a-ee28-4b78-9c59-9ee0f759ce56")));
     }
 }

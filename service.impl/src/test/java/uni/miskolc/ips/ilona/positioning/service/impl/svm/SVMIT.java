@@ -13,7 +13,7 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.positioning.model.svm.SupportVectorMachine;
-import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneGateway;
+import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneQueryService;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,7 +31,7 @@ public class SVMIT {
     private static final String siConfigLocation = "/si-config-measurement.xml";
 
     private ApplicationContext context;
-    private ZoneGateway zoneGateway;
+    private ZoneQueryService zoneGateway;
 
     @BeforeClass
     public static void beforeClass() {
@@ -47,7 +47,7 @@ public class SVMIT {
     @Before
     public void setUp() {
         this.context = new ClassPathXmlApplicationContext(siConfigLocation);
-        zoneGateway = context.getBean("ZoneGateway", ZoneGateway.class);
+        zoneGateway = context.getBean("ZoneGateway", ZoneQueryService.class);
     }
 
 
