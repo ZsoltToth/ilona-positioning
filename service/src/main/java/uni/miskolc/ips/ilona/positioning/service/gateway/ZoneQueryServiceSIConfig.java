@@ -123,6 +123,8 @@ public class ZoneQueryServiceSIConfig {
         gateway.setExpectedResponseType(Collection.class);
         gateway.setOutputChannel(listZonesReplyChannel());
         return gateway;
+
+        //TODO IF(reply)!=200 -> exception!
     }
 
     @ServiceActivator(inputChannel = "listZonesQueryChannel", autoStartup = "true", outputChannel = "listZonesReplyChannel")
