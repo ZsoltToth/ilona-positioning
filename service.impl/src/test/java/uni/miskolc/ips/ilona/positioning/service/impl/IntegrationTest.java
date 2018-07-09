@@ -35,10 +35,12 @@ public class IntegrationTest {
         ApplicationContext context = new AnnotationConfigApplicationContext(ZoneQueryServiceSIConfig.class);
 
         ZoneQueryService zoneQueryService = context.getBean("ZoneQueryGateway", ZoneQueryService.class);
+
         Collection<ZoneDTO> zoneDTOS = zoneQueryService.listZones();
-        System.out.println(zoneDTOS.size());
-        for (Object zoneDTO : zoneDTOS) {
+        Assert.assertTrue(zoneDTOS.size() == 3);
+        /*for (Object zoneDTO : zoneDTOS) {
             System.out.println(zoneDTO);
-        }
+        }*/
+
     }
 }

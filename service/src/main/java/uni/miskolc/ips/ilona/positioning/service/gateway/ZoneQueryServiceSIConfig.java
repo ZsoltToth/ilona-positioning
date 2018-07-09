@@ -113,6 +113,18 @@ public class ZoneQueryServiceSIConfig {
         return gateway;
     }
 
+    @Bean
+    @ServiceActivator(inputChannel = "listZonesQueryChannel")
+    public HttpRequestExecutingMessageHandler listGateway() {
+
+
+        HttpRequestExecutingMessageHandler gateway = new HttpRequestExecutingMessageHandler("http://" + System.getProperty("measurement.host") + ":" + System.getProperty("measurement.port") + "/listZones");
+        gateway.setHttpMethod(HttpMethod.GET);
+        gateway.setExpectedResponseType(Collection.class);
+        gateway.setOutputChannel(listZonesReplyChannel());
+        return gateway;
+    }
+
     @ServiceActivator(inputChannel = "listZonesQueryChannel", autoStartup = "true", outputChannel = "listZonesReplyChannel")
     public Collection<ZoneDTO> listZonesGateway(Collection<ZoneDTO> zoneDTOS) {
         return zoneDTOS;
