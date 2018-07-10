@@ -24,6 +24,8 @@ public class PositioningController {
     @Autowired
     private PositioningService positioningService;
 
+
+
 	/*@RequestMapping("/getLocation")
 	@ResponseBody
 	public Position getLocation(@RequestBody Measurement meas) throws InvalidMeasurementException, PositioningFailureException {
@@ -56,6 +58,7 @@ public class PositioningController {
         System.out.println(meas);
         position = positioningService.determinePosition(DTOConverter.convertToMeasurement(meas));
         LOG.info(String.format("Location estimated for %s as %s", meas, position));
+        System.out.println("asd");
         return DTOConverter.convertToPositionDTO(position);
     }
 

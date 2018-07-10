@@ -1,19 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p"
-       xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:aop="http://www.springframework.org/schema/aop"
-       xmlns:mvc="http://www.springframework.org/schema/mvc"
        xsi:schemaLocation="http://www.springframework.org/schema/beans
-        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd
-        http://www.springframework.org/schema/context
-        http://www.springframework.org/schema/context/spring-context-4.3.xsd
-        http://www.springframework.org/schema/aop
-        http://www.springframework.org/schema/aop/spring-aop-4.3.xsd
-        http://www.springframework.org/schema/mvc
-        http://www.springframework.org/schema/mvc/spring-mvc-4.3.xsd">
-<import resource="si-config-measurement.xml"/>
+        http://www.springframework.org/schema/beans/spring-beans-4.3.xsd">
+    <import resource="si-config-measurement.xml"/>
     <bean id="wifiDistanceCalculator"
           class="uni.miskolc.ips.ilona.measurement.model.measurement.wifi.VectorIntersectionWiFiRSSIDistance">
     </bean>
@@ -30,6 +20,22 @@
         <constructor-arg name="distanceCalculator" ref="measurementDistanceCalculator"/>
         <constructor-arg name="measurementGateway" ref="MeasurementGateway"/>
         <constructor-arg name="k" value="3"/>
+    </bean>
+    <bean id="knnpositioningService" class="uni.miskolc.ips.ilona.positioning.service.impl.knn.KNNSimplePositioning">
+        <constructor-arg name="distanceCalculator" ref="measurementDistanceCalculator"/>
+        <constructor-arg name="measurementGateway" ref="MeasurementGateway"/>
+        <constructor-arg name="k" value="3"/>
+    </bean>
+    <bean id="knnWpositioningService" class="uni.miskolc.ips.ilona.positioning.service.impl.knn.KNNWeightedPositioning">
+        <constructor-arg name="distanceCalculator" ref="measurementDistanceCalculator"/>
+        <constructor-arg name="measurementGateway" ref="MeasurementGateway"/>
+        <constructor-arg name="k" value="3"/>
+    </bean>
+    <bean id="naivebayespositioningService"
+          class="uni.miskolc.ips.ilona.positioning.service.impl.classification.bayes.NaiveBayesPositioningService">
+        <constructor-arg name="maxMeasurementDistance" value="50"/>
+        <constructor-arg name="measurementGateway" ref="MeasurementGateway"/>
+        <constructor-arg name="measDistanceCalculator" ref="measurementDistanceCalculator"/>
     </bean>
 
 </beans>

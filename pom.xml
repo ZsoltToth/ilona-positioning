@@ -114,7 +114,7 @@
             <id>si-measurement-template</id>
             <properties>
                 <measurement.host>localhost</measurement.host>
-                <measurement.port>8080</measurement.port>
+                <measurement.port>8081</measurement.port>
             </properties>
         </profile>
     </profiles>

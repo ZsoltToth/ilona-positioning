@@ -11,7 +11,7 @@ import uni.miskolc.ips.ilona.positioning.service.gateway.ZoneQueryServiceSIConfi
 import java.util.Collection;
 
 
-public class IntegrationTest {
+public class IntegrationTestIT {
 
 
     @Test
