@@ -10,17 +10,16 @@ import uni.miskolc.ips.ilona.positioning.service.PositioningService;
 public class PositioningServiceImpl implements PositioningService {
 
 
+    public PositioningServiceImpl() {
+        super();
 
-	public PositioningServiceImpl() {
-		super();
+    }
 
-	}
-
-	public Position determinePosition(Measurement measurement) throws InvalidMeasurementException, PositioningFailureException{
-		if(measurement.getId() == null){
-			throw new InvalidMeasurementException();
-		}
-		return new Position(Zone.UNKNOWN_POSITION);
-	}
+    public Position determinePosition(Measurement measurement) throws InvalidMeasurementException, PositioningFailureException {
+        if (measurement.getId() == null) {
+            throw new InvalidMeasurementException();
+        }
+        return new Position(Zone.UNKNOWN_POSITION);
+    }
 
 }

@@ -7,5 +7,5 @@ import uni.miskolc.ips.ilona.positioning.exceptions.PositioningFailureException;
 
 public interface PositioningService {
 
-	public Position determinePosition(Measurement measurement) throws InvalidMeasurementException, PositioningFailureException;
+    public Position determinePosition(Measurement measurement) throws InvalidMeasurementException, PositioningFailureException;
 }
