@@ -56,10 +56,10 @@ public class PositioningController {
         LOG.info(String.format("Called with parameters: %s", meas.toString()));
         Position position = null;
         System.out.println(meas);
-        position = positioningService.determinePosition(DTOConverter.convertToMeasurement(meas));
+        position = positioningService.determinePosition(MeasurementDTOConverter.convertToMeasurement(meas));
         LOG.info(String.format("Location estimated for %s as %s", meas, position));
         System.out.println("asd");
-        return DTOConverter.convertToPositionDTO(position);
+        return MeasurementDTOConverter.convertToPositionDTO(position);
     }
 
 
