@@ -1,9 +1,12 @@
 package uni.miskolc.ips.ilona.positioning.service.gateway;
 
-import org.junit.*;
+import org.junit.Assert;
+import org.junit.Before;
+import org.junit.BeforeClass;
+import org.junit.Ignore;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
-import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
+import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import uni.miskolc.ips.ilona.measurement.controller.dto.MeasurementDTO;
 
 import java.util.Collection;
 
@@ -18,37 +21,36 @@ public class MeasurementGatewayIT {
     private static final String sysEnvMeasurementHost = "measurement.host";
     private static final String sysEnvMeasurementPort = "measurement.port";
 
-    private static final String siConfigLocation = "/si-config-measurement.xml";
 
-    private ApplicationContext context;
+    private MeasurementGateway measurementGateway;
 
     @BeforeClass
-    public static void beforeClass(){
+    public static void beforeClass() {
         assumeNotNull(System.getProperty(sysEnvMeasurementHost));
         assumeNotNull(System.getProperty(sysEnvMeasurementPort));
-        try{
+        try {
             Integer.parseInt(System.getProperty(sysEnvMeasurementPort));
-        }catch(NumberFormatException ex){
+        } catch (NumberFormatException ex) {
             assumeNoException(ex);
         }
     }
 
     @Before
-    public void setUp(){
-        this.context = new ClassPathXmlApplicationContext(siConfigLocation);
+    public void setUp() {
+        ApplicationContext context = new AnnotationConfigApplicationContext(MeasurementGatewaySIConfig.class);
+
+        measurementGateway = context.getBean("MeasurementQueryGateway", MeasurementGateway.class);
     }
 
 
-    @Test
-    public void test(){
+    @Ignore
+    public void test() {
         System.out.println(
                 String.format("%s:%d/ilona/resources/listMeasurements",
                         System.getProperty(sysEnvMeasurementHost),
                         Integer.parseInt(System.getProperty(sysEnvMeasurementPort))));
-        MeasurementGateway measurementGateway = context.getBean("MeasurementGateway", MeasurementGateway.class);
-        Collection<Measurement> result = measurementGateway.listMeasurements();
-        Assert.assertNotEquals(0,result.size());
-
+        Collection<MeasurementDTO> result = measurementGateway.listMeasurements();
+        Assert.assertNotEquals(0, result.size());
 
 
     }
