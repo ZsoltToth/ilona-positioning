@@ -6,17 +6,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.ExceptionHandler;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.ContextLoader;
-
 import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
-import uni.miskolc.ips.ilona.measurement.model.position.Zone;
 import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 import uni.miskolc.ips.ilona.positioning.exceptions.PositioningFailureException;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
@@ -24,11 +17,11 @@ import uni.miskolc.ips.ilona.positioning.service.PositioningService;
 @Controller
 public class PositioningController {
 
-	private static final Logger LOG = LogManager
-			.getLogger(PositioningController.class);
+    private static final Logger LOG = LogManager
+            .getLogger(PositioningController.class);
 
-	@Autowired
-	private PositioningService positioningService;
+    @Autowired
+    private PositioningService positioningService;
 
 	/*@RequestMapping("/getLocation")
 	@ResponseBody
@@ -52,75 +45,78 @@ public class PositioningController {
 		}
 		return result;
 	}*/
-	
 
-	@RequestMapping("/getLocation")
-	@ResponseBody
-	public Position getLocation(@RequestBody Measurement meas) throws InvalidMeasurementException, PositioningFailureException {
-		LOG.info(String.format("Called with parameters: %s", meas.toString()));
-		Position result = null;
-		System.out.println(meas);
-		result = positioningService.determinePosition(meas);
-		LOG.info(String.format("Location estimated for %s as %s", meas, result));
-		return result;
-	}
-	
-	
-	
-	
-	 @ResponseStatus(value=HttpStatus.PRECONDITION_FAILED,
-             reason="Invalid or not measurement") 
-	@ExceptionHandler(InvalidMeasurementException.class)
-	public void invalidMeasurement(){
-	 }
-	 
-	 @ResponseStatus(value=HttpStatus.UNPROCESSABLE_ENTITY,
-             reason="The positioning can not be performed due to the measurement") 
-	@ExceptionHandler(PositioningFailureException.class)
-	public void unProcessable(){
-		 
-	 }
-	 
-	 
-	 @ResponseStatus(value=HttpStatus.INTERNAL_SERVER_ERROR,
-     reason="The k value is higher than the number of samples") 
-	 @ExceptionHandler(IllegalArgumentException.class)
-public void illegalKValue(){
- 
-}
-	
+    @RequestMapping("/")
+    public String index() {
+        return "index";
+    }
 
-	@RequestMapping("/positioningSetup/{algorithm}")
-	public String loadPositioningSetupPages(@PathVariable String algorithm) {
-		ApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
-		PositioningService newService;
-		System.out.println("old: "+positioningService);
-		switch (algorithm) {
-		case "knnW":
 
-			newService = (PositioningService) context.getBean("knnWpositioningService");
-			this.positioningService= newService;
-			break;
-		case "knn":
-			newService = (PositioningService) context.getBean("knnpositioningService");
-			this.positioningService= newService;
-			break;
+    @RequestMapping("/getLocation")
+    @ResponseBody
+    public Position getLocation(@RequestBody Measurement meas) throws InvalidMeasurementException, PositioningFailureException {
+        LOG.info(String.format("Called with parameters: %s", meas.toString()));
+        Position result = null;
+        System.out.println(meas);
+        result = positioningService.determinePosition(meas);
+        LOG.info(String.format("Location estimated for %s as %s", meas, result));
+        return result;
+    }
 
-		case "neuralnetwork":
-			newService = (PositioningService) context.getBean("nnpositioningService");
-			this.positioningService= newService;
-			break;
-		case "naivebayes":
-			newService = (PositioningService) context.getBean("naivebayespositioningService");
-			this.positioningService= newService;
-			break;
-		default:
-			System.out.println("No corresponding algorithm");
-			break;
-		}
-		System.out.println(positioningService);
-		return "redirect:/";
-	}
 
-	
+    @ResponseStatus(value = HttpStatus.PRECONDITION_FAILED,
+            reason = "Invalid or not measurement")
+    @ExceptionHandler(InvalidMeasurementException.class)
+    public void invalidMeasurement() {
+    }
+
+    @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY,
+            reason = "The positioning can not be performed due to the measurement")
+    @ExceptionHandler(PositioningFailureException.class)
+    public void unProcessable() {
+
+    }
+
+
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR,
+            reason = "The k value is higher than the number of samples")
+    @ExceptionHandler(IllegalArgumentException.class)
+    public void illegalKValue() {
+
+    }
+
+
+    @RequestMapping("/positioningSetup/{algorithm}")
+    public String loadPositioningSetupPages(@PathVariable String algorithm) {
+        ApplicationContext context = ContextLoader.getCurrentWebApplicationContext();
+        PositioningService newService;
+        System.out.println("old: " + positioningService);
+        switch (algorithm) {
+            case "knnW":
+
+                newService = (PositioningService) context.getBean("knnWpositioningService");
+                this.positioningService = newService;
+                break;
+            case "knn":
+                newService = (PositioningService) context.getBean("knnpositioningService");
+                this.positioningService = newService;
+                break;
+
+            case "neuralnetwork":
+                newService = (PositioningService) context.getBean("nnpositioningService");
+                this.positioningService = newService;
+                break;
+            case "naivebayes":
+                newService = (PositioningService) context.getBean("naivebayespositioningService");
+                this.positioningService = newService;
+                break;
+            default:
+                System.out.println("No corresponding algorithm");
+                break;
+        }
+        System.out.println(positioningService);
+        return "redirect:/";
+    }
+
+
 }
