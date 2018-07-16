@@ -8,7 +8,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.ContextLoader;
-import uni.miskolc.ips.ilona.measurement.model.measurement.Measurement;
+import uni.miskolc.ips.ilona.measurement.controller.dto.MeasurementDTO;
+import uni.miskolc.ips.ilona.measurement.controller.dto.PositionDTO;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 import uni.miskolc.ips.ilona.positioning.exceptions.PositioningFailureException;
@@ -54,13 +55,14 @@ public class PositioningController {
 
     @RequestMapping("/getLocation")
     @ResponseBody
-    public Position getLocation(@RequestBody Measurement meas) throws InvalidMeasurementException, PositioningFailureException {
+    public PositionDTO getLocation(@RequestBody MeasurementDTO meas) throws InvalidMeasurementException, PositioningFailureException {
         LOG.info(String.format("Called with parameters: %s", meas.toString()));
-        Position result = null;
+        Position position = null;
         System.out.println(meas);
-        result = positioningService.determinePosition(meas);
-        LOG.info(String.format("Location estimated for %s as %s", meas, result));
-        return result;
+        position = positioningService.determinePosition(MeasurementDTOConverter.convertToMeasurement(meas));
+        LOG.info(String.format("Location estimated for %s as %s", meas, position));
+        System.out.println("asd");
+        return PositionDTOConverter.convertToPositionDTO(position);
     }
 
 
