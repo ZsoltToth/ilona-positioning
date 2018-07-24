@@ -1,5 +1,6 @@
 package uni.miskolc.ips.ilona.positioning.service.gateway;
 
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -33,6 +34,8 @@ import java.util.Map;
 @IntegrationComponentScan("uni.miskolc.ips.ilona.positioning.service.gateway")
 @MessageEndpoint
 public class ZoneQueryServiceSIConfig {
+
+    private static final Logger LOG = org.apache.logging.log4j.LogManager.getLogger(ZoneQueryServiceSIConfig.class);
 
     @Autowired
     private Environment env;
@@ -93,6 +96,7 @@ public class ZoneQueryServiceSIConfig {
     @Bean
     @ServiceActivator(inputChannel = "stdErrChannel", autoStartup = "true")
     public CharacterStreamWritingMessageHandler logwriter00() {
+        LOG.error("Invalid gateway name in ZoneQueryServiceSIConfig");
         return new CharacterStreamWritingMessageHandler(new BufferedWriter(new OutputStreamWriter(System.err)));
     }
 
@@ -110,6 +114,7 @@ public class ZoneQueryServiceSIConfig {
         gateway.setHttpMethod(HttpMethod.GET);
         gateway.setExpectedResponseType(ZoneDTO.class);
         gateway.setOutputChannel(getZoneReplyChannel());
+        LOG.info("get zone by id query was requested from measurement server with Spring Integration");
         return gateway;
     }
 
@@ -122,13 +127,7 @@ public class ZoneQueryServiceSIConfig {
         gateway.setHttpMethod(HttpMethod.GET);
         gateway.setExpectedResponseType(Collection.class);
         gateway.setOutputChannel(listZonesReplyChannel());
+        LOG.info("list Zones query was requested from measurement server with Spring Integration");
         return gateway;
     }
-
-    @ServiceActivator(inputChannel = "listZonesQueryChannel", autoStartup = "true", outputChannel = "listZonesReplyChannel")
-    public Collection<ZoneDTO> listZonesGateway(Collection<ZoneDTO> zoneDTOS) {
-        return zoneDTOS;
-    }
-
-
 }
