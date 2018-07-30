@@ -1,5 +1,7 @@
 package uni.miskolc.ips.ilona.positioning.service.gateway;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
@@ -30,6 +32,8 @@ public class MeasurementGatewaySIConfig {
 
     @Autowired
     private Environment env;
+
+    private static final Logger LOG = LogManager.getLogger(MeasurementGatewaySIConfig.class);
 
     @Router(inputChannel = "measurementQueryRequestChannel")
     public String route(@Header(value = "METHOD_NAME") String methodname) {
@@ -63,18 +67,18 @@ public class MeasurementGatewaySIConfig {
     @Bean
     @ServiceActivator(inputChannel = "stdErrChannel", autoStartup = "true")
     public CharacterStreamWritingMessageHandler logwriter00() {
+        LOG.error("Invalid gateway name in MeasurementGatewaySIConfig");
         return new CharacterStreamWritingMessageHandler(new BufferedWriter(new OutputStreamWriter(System.err)));
     }
 
     @Bean
     @ServiceActivator(inputChannel = "listMeasurementQueryChannel")
     public HttpRequestExecutingMessageHandler listGateway() {
-
-
         HttpRequestExecutingMessageHandler gateway = new HttpRequestExecutingMessageHandler("http://" + System.getProperty("measurement.host") + ":" + System.getProperty("measurement.port") + "/resources/listMeasurements");
         gateway.setHttpMethod(HttpMethod.GET);
         gateway.setExpectedResponseType(Collection.class);
         gateway.setOutputChannel(listMeasurementReplyChannel());
+        LOG.info("list Measurements query was requested from measurement server with Spring Integration");
         return gateway;
     }
 

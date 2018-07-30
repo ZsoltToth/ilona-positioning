@@ -70,13 +70,14 @@ public class PositioningController {
             reason = "Invalid or not measurement")
     @ExceptionHandler(InvalidMeasurementException.class)
     public void invalidMeasurement() {
+        LOG.error("Invalid Measurement occurred during positioning");
     }
 
     @ResponseStatus(value = HttpStatus.UNPROCESSABLE_ENTITY,
             reason = "The positioning can not be performed due to the measurement")
     @ExceptionHandler(PositioningFailureException.class)
     public void unProcessable() {
-
+        LOG.error("Positioning Failure Exception in PositioningController, The positioning can not be performed due to the measurement");
     }
 
 
@@ -84,6 +85,7 @@ public class PositioningController {
             reason = "The k value is higher than the number of samples")
     @ExceptionHandler(IllegalArgumentException.class)
     public void illegalKValue() {
+        LOG.error("The k value is higher than the number of samples");
 
     }
 
@@ -98,25 +100,31 @@ public class PositioningController {
 
                 newService = (PositioningService) context.getBean("knnWpositioningService");
                 this.positioningService = newService;
+                LOG.info("Positioning Service changed to" + algorithm);
                 break;
             case "knn":
                 newService = (PositioningService) context.getBean("knnpositioningService");
                 this.positioningService = newService;
+                LOG.info("Positioning Service changed to" + algorithm);
                 break;
 
             case "neuralnetwork":
                 newService = (PositioningService) context.getBean("nnpositioningService");
                 this.positioningService = newService;
+                LOG.info("Positioning Service changed to" + algorithm);
                 break;
             case "naivebayes":
                 newService = (PositioningService) context.getBean("naivebayespositioningService");
                 this.positioningService = newService;
+                LOG.info("Positioning Service changed to" + algorithm);
                 break;
             default:
                 System.out.println("No corresponding algorithm");
+                LOG.warn("Positioning Service could not be changed to " + algorithm);
                 break;
         }
         System.out.println(positioningService);
+
         return "redirect:/";
     }
 
