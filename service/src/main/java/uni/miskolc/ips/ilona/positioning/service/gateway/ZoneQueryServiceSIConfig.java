@@ -114,7 +114,7 @@ public class ZoneQueryServiceSIConfig {
         gateway.setHttpMethod(HttpMethod.GET);
         gateway.setExpectedResponseType(ZoneDTO.class);
         gateway.setOutputChannel(getZoneReplyChannel());
-        LOG.info("get zone by id query was requested from measurement server with Spring Integration");
+        LOG.info("Get zone by id query was requested from measurement server with Spring Integration");
         return gateway;
     }
 
@@ -127,7 +127,7 @@ public class ZoneQueryServiceSIConfig {
         gateway.setHttpMethod(HttpMethod.GET);
         gateway.setExpectedResponseType(Collection.class);
         gateway.setOutputChannel(listZonesReplyChannel());
-        LOG.info("list Zones query was requested from measurement server with Spring Integration");
+        LOG.info("List Zones query was requested from measurement server with Spring Integration");
         return gateway;
     }
 }
