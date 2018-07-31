@@ -129,5 +129,7 @@ public class ZoneQueryServiceSIConfig {
         gateway.setOutputChannel(listZonesReplyChannel());
         LOG.info("List Zones query was requested from measurement server with Spring Integration");
         return gateway;
+
+        //TODO IF(reply)!=200 -> exception!
     }
 }
