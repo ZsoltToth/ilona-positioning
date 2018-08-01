@@ -6,6 +6,7 @@ import uni.miskolc.ips.ilona.measurement.model.measurement.*;
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
 import javax.xml.datatype.XMLGregorianCalendar;
+import java.sql.Timestamp;
 import java.util.*;
 
 class MeasurementDTOConverter {
@@ -93,6 +94,12 @@ class MeasurementDTOConverter {
     private static XMLGregorianCalendar convertToXMLXmlGregorianCalendar(Date date) throws DatatypeConfigurationException {
         GregorianCalendar gregorianCalendar = new GregorianCalendar();
         gregorianCalendar.setTime(date);
+        return DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
+    }
+
+    public static XMLGregorianCalendar convertToXMLXmlGregorianCalendar(Timestamp timestamp) throws DatatypeConfigurationException {
+        GregorianCalendar gregorianCalendar = new GregorianCalendar();
+        gregorianCalendar.setTimeInMillis(timestamp.getTime());
         return DatatypeFactory.newInstance().newXMLGregorianCalendar(gregorianCalendar);
     }
 

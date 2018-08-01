@@ -10,10 +10,17 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.ContextLoader;
 import uni.miskolc.ips.ilona.measurement.controller.dto.MeasurementDTO;
 import uni.miskolc.ips.ilona.measurement.controller.dto.PositionDTO;
+import uni.miskolc.ips.ilona.measurement.controller.dto.UserPositionDTO;
 import uni.miskolc.ips.ilona.measurement.model.position.Position;
 import uni.miskolc.ips.ilona.positioning.exceptions.InvalidMeasurementException;
 import uni.miskolc.ips.ilona.positioning.exceptions.PositioningFailureException;
 import uni.miskolc.ips.ilona.positioning.service.PositioningService;
+import uni.miskolc.ips.ilona.positioning.service.gateway.TrackingGateway;
+
+import javax.servlet.http.Cookie;
+import javax.servlet.http.HttpServletRequest;
+import javax.xml.datatype.DatatypeConfigurationException;
+import java.sql.Timestamp;
 
 @Controller
 public class PositioningController {
@@ -23,6 +30,9 @@ public class PositioningController {
 
     @Autowired
     private PositioningService positioningService;
+
+    @Autowired
+    private TrackingGateway trackingGateway;
 
 	/*@RequestMapping("/getLocation")
 	@ResponseBody
@@ -53,15 +63,23 @@ public class PositioningController {
     }
 
 
-    @RequestMapping("/getLocation")
+    @RequestMapping(value = "/getLocation", method = RequestMethod.GET)
     @ResponseBody
-    public PositionDTO getLocation(@RequestBody MeasurementDTO meas) throws InvalidMeasurementException, PositioningFailureException {
+    public PositionDTO getLocation(@RequestBody MeasurementDTO meas, HttpServletRequest httpServletRequest) throws InvalidMeasurementException, PositioningFailureException, DatatypeConfigurationException {
         LOG.info(String.format("Called with parameters: %s", meas.toString()));
         Position position = null;
-        System.out.println(meas);
         position = positioningService.determinePosition(MeasurementDTOConverter.convertToMeasurement(meas));
         LOG.info(String.format("Location estimated for %s as %s", meas, position));
-        System.out.println("asd");
+        Cookie[] cookies = httpServletRequest.getCookies();
+        UserPositionDTO userPositionDTO = new UserPositionDTO();
+        userPositionDTO.setPosition(PositionDTOConverter.convertToPositionDTO(position));
+        userPositionDTO.setTime(MeasurementDTOConverter.convertToXMLXmlGregorianCalendar(new Timestamp(System.currentTimeMillis())));
+        for (Cookie cookie : cookies) {
+            if ("userId".equals(cookie.getName())) {
+                userPositionDTO.setUserId(cookie.getValue());
+                trackingGateway.addHistory(userPositionDTO);
+            }
+        }
         return PositionDTOConverter.convertToPositionDTO(position);
     }
 
